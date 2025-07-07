@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Juegos Interactivos - Museos Nacionales</title>
   <style>
-    /* === ESTILO GENERAL === */
     body {
       background-color: #000;
       color: #fff;
@@ -15,11 +14,6 @@
       text-align: center;
     }
 
-    h2, h3, p {
-      margin: 0.5em 0;
-    }
-
-    /* === IMÁGENES INTERACTIVAS === */
     .image-toggle {
       margin: 30px auto;
       border-radius: 20px;
@@ -58,12 +52,65 @@
       display: none;
     }
 
-    .large-btn {
-      max-width: 700px;
+    .game-container {
+      margin: 40px auto;
+      max-width: 95vw;
+      background-color: #111;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00bfff;
     }
 
-    .small-btn {
-      max-width: 200px;
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .card {
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      position: relative;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card img,
+    .card .back {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      border-radius: 8px;
+    }
+
+    .card .back {
+      background-color: #333;
+      color: white;
+      font-size: 2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotateY(0deg);
+      transition: transform 0.6s;
+    }
+
+    .card .front {
+      transform: rotateY(180deg);
+      transition: transform 0.6s;
+    }
+
+    .card.flipped .front {
+      transform: rotateY(0deg);
+    }
+
+    .card.flipped .back {
+      transform: rotateY(180deg);
     }
 
     button {
@@ -83,124 +130,25 @@
       box-shadow: 0 0 25px #00ffcc, 0 0 10px #00bfff;
     }
 
-    /* === RESPONSIVE AJUSTE PARA JUEGOS === */
-    @media screen and (max-width: 768px) {
-      .image-toggle.small-btn {
-        max-width: 90vw;
-      }
-
-      .board {
-        grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
-        gap: 4vw;
-      }
-
-      .card {
-        width: 20vw;
-        height: 20vw;
-        max-width: 120px;
-        max-height: 120px;
-      }
-
-      #puzzle {
-        grid-template-columns: repeat(12, 1fr);
-        gap: 1vw;
-      }
-
-      .cell {
-        aspect-ratio: 1 / 1;
-        font-size: 2.5vw;
-        min-width: 24px;
-        max-width: 35px;
-      }
-
-      canvas {
-        width: 90% !important;
-        height: auto !important;
-      }
-
-      button {
-        width: 90%;
-        font-size: 1em;
-      }
+    .large-btn {
+      max-width: 700px;
     }
 
-    /* === ELEMENTOS JUEGOS ESPECÍFICOS (base) === */
-    .game-container {
-      margin: 40px auto;
-      max-width: 95vw;
-      background-color: #111;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 20px #00bfff;
-    }
-
-    .board {
-      display: grid;
-      grid-template-columns: repeat(4, 120px);
-      gap: 15px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .card {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      perspective: 1000px;
-      cursor: pointer;
-    }
-
-    .card img, .card .front {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      backface-visibility: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: rotateY(180deg);
-      transition: transform 0.6s;
-    }
-
-    .card .back {
-      background-color: #333;
-      color: white;
-      font-size: 2em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      backface-visibility: hidden;
-      transform: rotateY(0deg);
-      transition: transform 0.6s;
-    }
-
-    .card.flipped .front {
-      transform: rotateY(0deg);
-    }
-
-    .card.flipped .back {
-      transform: rotateY(180deg);
-    }
-
-    .card.matched {
-      pointer-events: none;
-      opacity: 0.5;
+    .small-btn {
+      max-width: 200px;
     }
 
     #puzzle {
       display: grid;
-      grid-template-columns: repeat(12, 30px);
-      justify-content: center;
+      grid-template-columns: repeat(auto-fit, minmax(24px, 1fr));
       gap: 4px;
-      margin: 20px 0;
+      justify-content: center;
+      margin: 20px auto;
     }
 
     .cell {
-      width: 30px;
-      height: 30px;
+      aspect-ratio: 1 / 1;
+      width: 100%;
       background-color: #1e1e1e;
       color: #00ffcc;
       display: flex;
@@ -212,48 +160,41 @@
       transition: background 0.2s;
     }
 
-    .cell.selected {
-      background-color: #004d4d;
+    #puzzle-wrapper {
+      width: 100%;
+      max-width: 90vw;
     }
 
-    .cell.found {
-      background-color: #00bfff;
-      color: #000;
-      font-weight: bold;
+    #puzzle-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
     }
 
-    #wordlist {
-      margin-top: 20px;
-      font-size: 1.1em;
-      color: white;
+    #canvas {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
     }
 
-    #wordlist ul {
-      list-style: none;
-      padding: 0;
+    .keyboard button {
+      font-size: 1em;
+      padding: 8px;
+      min-width: 32px;
+      margin: 2px;
+      border-radius: 6px;
     }
 
-    .word-item {
-      margin-bottom: 5px;
-    }
+    @media (max-width: 600px) {
+      .card {
+        aspect-ratio: 1 / 1;
+      }
 
-    .box {
-      display: inline-block;
-      width: 20px;
-      color: #00ffcc;
-      font-weight: bold;
-      margin-right: 8px;
-      cursor: pointer;
-    }
-
-    .word-item.checked .box {
-      color: #00ffcc;
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #aaa;
+      .keyboard {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
   </style>
 </head>
