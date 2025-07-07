@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Juegos Interactivos - Museos Nacionales</title>
   <style>
+    /* === ESTILO GENERAL === */
     body {
       background-color: #000;
       color: #fff;
@@ -14,6 +15,11 @@
       text-align: center;
     }
 
+    h2, h3, p {
+      margin: 0.5em 0;
+    }
+
+    /* === IMÁGENES INTERACTIVAS === */
     .image-toggle {
       margin: 30px auto;
       border-radius: 20px;
@@ -52,9 +58,76 @@
       display: none;
     }
 
+    .large-btn {
+      max-width: 700px;
+    }
+
+    .small-btn {
+      max-width: 200px;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 24px;
+      font-size: 1em;
+      background: linear-gradient(45deg, #00ffcc, #00bfff);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00ffcc;
+    }
+
+    button:hover {
+      background: linear-gradient(45deg, #00bfff, #00ffcc);
+      box-shadow: 0 0 25px #00ffcc, 0 0 10px #00bfff;
+    }
+
+    /* === RESPONSIVE AJUSTE PARA JUEGOS === */
+    @media screen and (max-width: 768px) {
+      .image-toggle.small-btn {
+        max-width: 90vw;
+      }
+
+      .board {
+        grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
+        gap: 4vw;
+      }
+
+      .card {
+        width: 20vw;
+        height: 20vw;
+        max-width: 120px;
+        max-height: 120px;
+      }
+
+      #puzzle {
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1vw;
+      }
+
+      .cell {
+        aspect-ratio: 1 / 1;
+        font-size: 2.5vw;
+        min-width: 24px;
+        max-width: 35px;
+      }
+
+      canvas {
+        width: 90% !important;
+        height: auto !important;
+      }
+
+      button {
+        width: 90%;
+        font-size: 1em;
+      }
+    }
+
+    /* === ELEMENTOS JUEGOS ESPECÍFICOS (base) === */
     .game-container {
       margin: 40px auto;
-      max-width: 800px;
+      max-width: 95vw;
       background-color: #111;
       border-radius: 15px;
       padding: 20px;
@@ -77,7 +150,7 @@
       cursor: pointer;
     }
 
-    .card img {
+    .card img, .card .front {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -112,30 +185,75 @@
       transform: rotateY(180deg);
     }
 
-    button {
-      margin-top: 25px;
-      padding: 12px 24px;
+    .card.matched {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(12, 30px);
+      justify-content: center;
+      gap: 4px;
+      margin: 20px 0;
+    }
+
+    .cell {
+      width: 30px;
+      height: 30px;
+      background-color: #1e1e1e;
+      color: #00ffcc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1em;
-      background: linear-gradient(45deg, #00ffcc, #00bfff);
-      color: #000;
-      border: none;
-      border-radius: 50px;
+      border: 1px solid #00bfff;
       cursor: pointer;
-      box-shadow: 0 0 15px #00ffcc;
+      transition: background 0.2s;
     }
 
-    button:hover {
-      background: linear-gradient(45deg, #00bfff, #00ffcc);
-      box-shadow: 0 0 25px #00ffcc, 0 0 10px #00bfff;
+    .cell.selected {
+      background-color: #004d4d;
     }
 
-    /* Tamaños personalizados */
-    .large-btn {
-      max-width: 700px;
+    .cell.found {
+      background-color: #00bfff;
+      color: #000;
+      font-weight: bold;
     }
 
-    .small-btn {
-      max-width: 200px;
+    #wordlist {
+      margin-top: 20px;
+      font-size: 1.1em;
+      color: white;
+    }
+
+    #wordlist ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .word-item {
+      margin-bottom: 5px;
+    }
+
+    .box {
+      display: inline-block;
+      width: 20px;
+      color: #00ffcc;
+      font-weight: bold;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .word-item.checked .box {
+      color: #00ffcc;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #aaa;
     }
   </style>
 </head>
