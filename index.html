@@ -54,24 +54,24 @@
 
     .game-container {
       margin: 40px auto;
-      max-width: 95vw;
+      max-width: 100%;
       background-color: #111;
       border-radius: 15px;
       padding: 20px;
       box-shadow: 0 0 20px #00bfff;
+      box-sizing: border-box;
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 15px;
+      gap: 10px;
       justify-content: center;
-      margin-top: 20px;
     }
 
     .card {
-      aspect-ratio: 1 / 1;
       width: 100%;
+      aspect-ratio: 1/1;
       position: relative;
       perspective: 1000px;
       cursor: pointer;
@@ -82,27 +82,26 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      backface-visibility: hidden;
       position: absolute;
       top: 0;
       left: 0;
-      backface-visibility: hidden;
-      border-radius: 8px;
+      transition: transform 0.6s;
+      border-radius: 10px;
+    }
+
+    .card img.front {
+      transform: rotateY(180deg);
     }
 
     .card .back {
       background-color: #333;
       color: white;
-      font-size: 2em;
+      font-size: 1.5em;
       display: flex;
       align-items: center;
       justify-content: center;
       transform: rotateY(0deg);
-      transition: transform 0.6s;
-    }
-
-    .card .front {
-      transform: rotateY(180deg);
-      transition: transform 0.6s;
     }
 
     .card.flipped .front {
@@ -141,14 +140,13 @@
     #puzzle {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(24px, 1fr));
-      gap: 4px;
+      gap: 2px;
       justify-content: center;
-      margin: 20px auto;
     }
 
     .cell {
-      aspect-ratio: 1 / 1;
       width: 100%;
+      aspect-ratio: 1/1;
       background-color: #1e1e1e;
       color: #00ffcc;
       display: flex;
@@ -158,6 +156,16 @@
       border: 1px solid #00bfff;
       cursor: pointer;
       transition: background 0.2s;
+    }
+
+    .cell.selected {
+      background-color: #004d4d;
+    }
+
+    .cell.found {
+      background-color: #00bfff;
+      color: #000;
+      font-weight: bold;
     }
 
     #puzzle-wrapper {
@@ -171,29 +179,21 @@
       gap: 4px;
     }
 
-    #canvas {
+    canvas {
       width: 100%;
       max-width: 300px;
       height: auto;
     }
 
-    .keyboard button {
-      font-size: 1em;
-      padding: 8px;
-      min-width: 32px;
-      margin: 2px;
-      border-radius: 6px;
-    }
-
     @media (max-width: 600px) {
-      .card {
-        aspect-ratio: 1 / 1;
+      .board {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
       }
-
-      .keyboard {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+      .card {
+        font-size: 0.8em;
+      }
+      #puzzle-container {
+        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
