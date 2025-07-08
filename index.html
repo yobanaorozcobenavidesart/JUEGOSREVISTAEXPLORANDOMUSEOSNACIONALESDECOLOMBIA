@@ -1,854 +1,975 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juegos Interactivos - Museos Nacionales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Explorando Museos y Arte Latinoamericano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 30px 20px;
+   body {
+  margin: 0;
+  font-family: 'Times New Roman', serif;
+  font-size: 18px;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+    header {
+      background-color: #000000;
+      padding: 3rem 1rem;
       text-align: center;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.2);
     }
-
-    .image-toggle {
-      margin: 30px auto;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00ffcc;
-      transition: transform 0.3s ease;
-    }
-
-    .image-toggle:hover {
-      transform: scale(1.02);
-    }
-
-    .image-toggle img {
+    header img {
+      max-width: 450px;
       width: 100%;
       height: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #fff;
+      border: 2px solid #fff;
+    }
+    nav {
+      background-color: #111111;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem;
+      box-shadow: inset 0 -2px 5px rgba(255,255,255,0.1);
+    }
+    button {
+      background: #ffffff;
+      border: 2px solid #000000;
+      color: #000000;
+      padding: 0.8rem 1.5rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 2px 5px rgba(255,255,255,0.2);
+    }
+    button:hover {
+      background: #000000;
+      color: #ffffff;
+      box-shadow: 0 0 10px #fff;
+      border-color: #fff;
+    }
+    .content {
+      display: none;
+      padding: 2rem 1rem;
+      max-width: 900px;
+      margin: 2rem auto;
+      background: #111111cc; /* negro semi-transparente */
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+      color: #ffffff;
+    }
+    iframe {
+      width: 100%;
+      border: none;
+      margin-top: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+      background-color: #000;
+      overflow: hidden;
       display: block;
     }
-
-    .image-toggle .label-top {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 12px;
-      background: rgba(0, 0, 0, 0.8);
-      font-size: 1.3em;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 1px 1px 3px #000;
-      z-index: 2;
+    .author {
+      text-align: center;
+      margin: 2rem 0;
+      color: #ffffff;
     }
-
-    .hidden {
-      display: none;
-    }
-
-    .game-container {
-      margin: 40px auto;
-      max-width: 800px;
-      background-color: #111;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 20px #00bfff;
-    }
-
-    .board {
-      display: grid;
-      grid-template-columns: repeat(4, 120px);
-      gap: 15px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .card {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      perspective: 1000px;
-      cursor: pointer;
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
+    .author img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
       object-fit: cover;
-      backface-visibility: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: rotateY(180deg);
-      transition: transform 0.6s;
+      margin-bottom: 1rem;
+      border: 3px solid #fff;
+      box-shadow: 0 0 15px #fffaaaff;
     }
-
-    .card .back {
-      background-color: #333;
-      color: white;
-      font-size: 2em;
+    .author h3 {
+      margin: 0.5rem 0 0.2rem;
+    }
+    .author p {
+      margin: 0;
+      color: #cccccc;
+      font-style: italic;
+    }
+    .authors-container {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      backface-visibility: hidden;
-      transform: rotateY(0deg);
-      transition: transform 0.6s;
+      gap: 2.5rem;
     }
-
-    .card.flipped .front {
-      transform: rotateY(0deg);
-    }
-
-    .card.flipped .back {
-      transform: rotateY(180deg);
-    }
-
-    button {
-      margin-top: 25px;
-      padding: 12px 24px;
-      font-size: 1em;
-      background: linear-gradient(45deg, #00ffcc, #00bfff);
-      color: #000;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00ffcc;
-    }
-
-    button:hover {
-      background: linear-gradient(45deg, #00bfff, #00ffcc);
-      box-shadow: 0 0 25px #00ffcc, 0 0 10px #00bfff;
-    }
-
-    .large-btn {
-      max-width: 700px;
-    }
-
-    .small-btn {
-      max-width: 170px;
-    }
-
-    /* SOLO AJUSTES PARA LOS JUEGOS EN PANTALLAS PEQUEÑAS */
-    @media screen and (max-width: 768px) {
-      /* Memorama */
-      .board {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 10px !important;
-      }
-      .card {
-        width: 90px !important;
-        height: 90px !important;
-      }
-
-      /* Sopa de letras */
-      #puzzle {
-        grid-template-columns: repeat(12, minmax(20px, 1fr)) !important;
-        gap: 2px !important;
-      }
-      .cell {
-        width: 24px !important;
-        height: 24px !important;
-        font-size: 0.75em !important;
-      }
-
-      /* Rompecabezas */
-      #puzzle-wrapper {
-        width: 100% !important;
-        max-width: 320px !important;
-      }
-
-      /* Ahorcado */
-      #canvas {
-        width: 100% !important;
-        height: auto !important;
-      }
-      #keyboard button {
-        padding: 4px 6px !important;
-        font-size: 0.8em !important;
-      }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #000000;
+      color: #888888;
+      font-size: 0.9rem;
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.05);
+      user-select: none;
     }
   </style>
+  <script>
+    function toggleContent(id) {
+      const allSections = document.querySelectorAll('.content');
+      allSections.forEach(section => {
+        section.style.display = section.id === id ? (section.style.display === 'block' ? 'none' : 'block') : 'none';
+      });
+    }
+  </script>
 </head>
 <body>
+<header style="text-align: center; margin-top: 20px;">
+  <img src="https://i.postimg.cc/4NjxHQ4y/Whats-App-Image-2025-06-27-at-9.jpg" alt="Logo Revista" style="max-width: 90%; height: auto; border-radius: 10px;" />
+</header>
 
- <!-- BOTÓN PRINCIPAL -->
-<div class="image-toggle large-btn" onclick="toggleSection('subMenu')" style="cursor: pointer; text-align: center; margin-bottom: 20px;">
-  <h2 style="color: white; font-size: 36px; margin: 0 0 20px 0;">Juegos Interactivos Y Educativos</h2>
-  <img src="https://i.postimg.cc/KvGnsFtB/Whats-App-Image-2025-06-27-at-9-00-51-AM.jpg" alt="Juegos Interactivos" style="width: 100%; max-width: 100%; height: auto; border-radius: 12px;" />
+
+
+  <nav>
+    <button onclick="toggleContent('inicio')">Inicio</button>
+    <button onclick="toggleContent('historia')">Historia</button>
+   <div style="position: relative; width: 200px; height: 70px; margin-bottom: 10px;">
+  <span style="position: absolute;
+               top: 5px;
+               left: 0;
+               right: 0;
+               text-align: center;
+               font-weight: bold;
+               font-size: 12px;
+               font-family: 'Orbitron', sans-serif;
+               color: black; /* Cambiado a negro */
+               text-shadow: 1px 1px 2px #ffffff;">
+    Revistas Museos Colombia
+  </span>
+
+  <button onclick="toggleContent('revistas')" 
+          style="background-image: url('https://i.postimg.cc/KvGnsFtB/Whats-App-Image-2025-06-27-at-9-00-51-AM.jpg'); 
+                 background-size: contain; 
+                 background-repeat: no-repeat; 
+                 background-position: 0px 25px; 
+                 width: 200px; 
+                 height: 88px; 
+                 border: none; 
+                 cursor: pointer;">
+  </button>
 </div>
 
-  
-  <div style="background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 14px;">
-  <h3 style="text-align: center; margin-top: 0; color: #fff;">Instrucciones de uso</h3>
-  <p style="text-align: justify; margin-bottom: 10px;">
-    Haz clic sobre una imagen para abrir el juego correspondiente. El juego se desplegará justo debajo de la imagen seleccionada.
-  </p>
-  <p style="text-align: justify; margin-bottom: 10px;">
-    Puedes jugar libremente y volver a hacer clic sobre la imagen para cerrar el juego.
-  </p>
-  <p style="text-align: justify;">
-    Recuerda que solo puede estar un juego visible a la vez. Si deseas abrir otro, primero cierra el actual.
-  </p>
-</div>
 
-  
-  
-  <div id="subMenu" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 40px 0;">
+
+    <div style="position: relative; width: 200px; height: 70px; margin-bottom: 10px;">
+  <span style="position: absolute;
+               top: 5px;
+               left: 0;
+               right: 0;
+               text-align: center;
+               font-weight: bold;
+               font-size: 12px;
+               font-family: 'Orbitron', sans-serif;
+               color: black;
+               text-shadow: 1px 1px 2px #ffffff;">
+    Revistas Arte Latinoamérica
+  </span>
+
+  <button onclick="toggleContent('revistas Latinoamericanas')" 
+          style="background-image: url('https://i.postimg.cc/gJhXtczy/Whats-App-Image-2025-06-27-at-9-1.jpg'); 
+                 background-size: contain; 
+                 background-repeat: no-repeat; 
+                 background-position: 0px 25px; 
+                 width: 200px; 
+                 height: 85px; 
+                 border: none; 
+                 cursor: pointer;">
+  </button>
+</div>
+    <div style="position: relative; width: 200px; height: 70px; margin-bottom: 10px;">
+  <span style="position: absolute;
+               top: 5px;
+               left: 0;
+               right: 0;
+               text-align: center;
+               font-weight: bold;
+               font-size: 12px;
+               font-family: 'Orbitron', sans-serif;
+               color: black;
+               text-shadow: 1px 1px 2px #ffffff;">
+    Revistas Jóvenes Creadores
+  </span>
+
+  <button onclick="toggleContent('revistas Jóvenes Creadores')" 
+          style="background-image: url('https://i.postimg.cc/6qnBHMPr/Whats-App-Image-2025-06-27-at-9-1-1.png'); 
+                 background-size: contain; 
+                 background-repeat: no-repeat; 
+                 background-position: 0px 25px; 
+                 width: 200px; 
+                 height: 85px; 
+                 border: none; 
+                 cursor: pointer;">
+  </button>
+</div>
     
-  <!-- BOTÓN MEMORAMA MUSEO EL RAYO COMO IMAGEN -->
-<div class="image-toggle small-btn" onclick="toggleSection('memoramaGame')" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div class="label-top">Memorama Museo El Rayo</div>
-  <img src="https://i.postimg.cc/J13jHPdQ/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-CON-YOBANA-OROZCO-BENAVIDES-EDICI-N-1-MUSEO-RAYO-T.jpg" width="140" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+    <button onclick="toggleContent('convocatoria')">Convocatorias</button>
+
+    <button onclick="toggleContent('cuentos')">Cuentos</button>
+    <button onclick="toggleContent('podcast')">Podcast</button>
+    <button onclick="toggleContent('juegos')">Juegos</button>
+    <button onclick="toggleContent('servicios')">Servicios</button>
+    <button onclick="toggleContent('contacto')">Contacto</button>
+    <button onclick="toggleContent('autores')">Autores</button>
+  </nav>
+
+  <div id="inicio" class="content">
+  <h2>
+    ¡Bienvenidas y bienvenidos a<br><span style="color: #ffffff;">Explorando Museos y Arte Latinoamericano!</span>
+  </h2>
+
+  <p style="font-size: 17px; line-height: 1.7; text-align: justify;">
+    Esta plataforma nace desde el corazón de América Latina para compartir la riqueza cultural que habita en nuestros museos, comunidades y expresiones artísticas. Aquí convergen el arte visual, la literatura, la historia, la tecnología y la creatividad de nuestros pueblos, como un reflejo vivo de nuestra identidad.
+  </p>
+
+  <p style="font-size: 17px; line-height: 1.7; text-align: justify;">
+    Nuestro proyecto se originó en Colombia con un enfoque educativo hacia los museos nacionales. Hoy damos un paso más allá: expandimos nuestra mirada hacia todo el continente latinoamericano, integrando artistas, docentes, estudiantes y amantes del arte en una propuesta abierta y sin ánimo de lucro.
+  </p>
+
+  <p style="font-size: 17px; line-height: 1.7; text-align: justify;">
+    Desde la arqueología precolombina hasta las expresiones contemporáneas, cada edición de la revista es una invitación a conocer, valorar y aprender del patrimonio artístico que nos une. Creemos que el arte educa, inspira, transforma... y también sana.
+  </p>
+
+  <p style="font-size: 17px; line-height: 1.7; text-align: justify;">
+    En <strong>Explorando Museos y Arte Latinoamericano</strong>, comprendemos que <strong>el arte, la literatura y los nuevos medios</strong> no solo son herramientas educativas, sino también <strong>vehículos de sanación emocional</strong>. Son caminos que fortalecen la inteligencia emocional, estimulan la empatía y permiten expresar lo que a veces no se puede decir con palabras.
+  </p>
+
+  <p style="font-size: 17px; line-height: 1.7; text-align: justify;">
+    Además, esta plataforma es una <strong>puerta abierta para los artistas</strong>: un espacio de visibilidad, reconocimiento y conexión con públicos de toda América Latina. Creemos en el poder del arte para construir comunidad, para sanar y para educar.
+  </p>
+
+  <p style="font-size: 17px; line-height: 1.7; text-align: justify;">
+    Mi nombre es <strong>Yobana Orozco Benavides</strong>, y este sueño comenzó como un proyecto universitario. Hoy es una ventana abierta a la educación, la inclusión, el arte y la libertad creativa. Una revista colaborativa que reúne voces de todas las edades y territorios.
+  </p>
+
+  <p style="font-size: 18px; font-style: italic; text-align: center; margin-top: 30px; color: #ffffff;">
+    ¡Gracias por ser parte de esta aventura cultural!  
+    <br>Explora, aprende, crea, comparte... y sana.
+  </p>
+
+  <!-- Misión / Visión / Filosofía -->
+  <div style="margin-top: 50px;">
+    <h3 style="color: #ffffff; text-align: center; margin-bottom: 20px;">Misión</h3>
+    <p style="font-size: 16px; text-align: justify;">
+      Fomentar la educación cultural a través de contenidos artísticos accesibles, promoviendo el aprendizaje colaborativo, la creatividad, la inteligencia emocional y el reconocimiento del patrimonio cultural latinoamericano.
+    </p>
+
+    <h3 style="color: #ffffff; text-align: center; margin-top: 40px; margin-bottom: 20px;">Visión</h3>
+    <p style="font-size: 16px; text-align: justify;">
+      Ser una plataforma educativa, cultural y emocionalmente significativa de referencia en América Latina, que conecte artistas, educadores y estudiantes mediante experiencias transmedia que inspiren transformación social y personal.
+    </p>
+
+    <h3 style="color: #ffffff; text-align: center; margin-top: 40px; margin-bottom: 20px;">Filosofía</h3>
+    <p style="font-size: 16px; text-align: justify;">
+      Creemos en un arte libre, inclusivo y comunitario. Apostamos por el conocimiento compartido, la educación emocional, la cultura como puente entre generaciones y el arte como herramienta terapéutica y de transformación.
+    </p>
+  </div> <!-- Cierre correcto de la sección misión-visión-filosofía -->
+
+  <!-- Botones redes sociales -->
+  <div style="text-align: center; margin-top: 50px;">
+    <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #ffffff;">🔗 ¡Conéctate con nuestras plataformas!</p>
+    
+    <a href="https://www.facebook.com/ArtesMulticap/?locale=es_LA" target="_blank" title="Facebook" style="margin: 10px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 40px; height: 40px;">
+    </a>
+
+    <a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=nv28zdt" target="_blank" title="Instagram" style="margin: 10px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram" style="width: 40px; height: 40px;">
+    </a>
+  </div>
 </div>
 
-
-  <!-- BOTÓN SOPA DE LETRAS BOTERO -->
-  <div class="image-toggle small-btn" onclick="toggleSection('boteroGame')" style="cursor: pointer; text-align: center;">
-    <div class="label-top">Sopa de Letras Museo Botero</div>
-    <img src="https://i.postimg.cc/zXS6K19j/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-EDICION-2-VOL-2-YOBANA-OROZCO.png" width="140" />
-  </div>
-
-  <!-- BOTÓN ROMPECABEZAS ART LAND -->
-  <div class="image-toggle small-btn" onclick="toggleSection('artLandGame'); setTimeout(crearPiezas, 100);" style="cursor: pointer; text-align: center;">
-    <div class="label-top">Rompecabeza Museo ArtLand</div>
-    <img src="https://i.postimg.cc/3r5QM9hP/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano.jpg" width="140" />
-  </div>
-
-  <!-- BOTÓN EL AHORCADO MUSEO MUNDO CHATARRA -->
-  <div class="image-toggle small-btn" onclick="toggleSection('ahorcadoGame'); setTimeout(initGame, 100);" style="cursor: pointer; text-align: center;">
-    <div class="label-top">Ahorcado Mundo Chatarra</div>
-    <img src="https://i.postimg.cc/9CH7mqB2/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-EDICION-3-VOL-1-YOBANA-OROZCO.jpg" width="140" />
-  </div>
-</div>
-
+       
+<div id="historia" class="content">
    
+  <h2>Nuestra Historia</h2>
+   <p><strong>INICIADO EN NOVIEMBRE DE 2023</strong></p>
 
+  <p>Esta revista nació de una experiencia transformadora durante una salida pedagógica de la <strong>Universidad del Tolima</strong> al <strong>Museo El Rayo</strong>, guiados por la catedrática <strong>Vanessa López</strong>. Allí, un taller de grabado (intaglio) despertó aún más mi pasión por el arte y la cultura de Colombia.</p>
 
+  <p>Como parte de ese proyecto, junto con la catedrática <strong>Claudia Rengifo</strong>, surgió el desafío de crear esta revista, que busca compartir la riqueza y espectacularidad de nuestros museos nacionales.</p>
 
+  <p>Quiero transmitir que el arte y la cultura son accesibles para todos, ya que muchos museos en Colombia son gratuitos o tienen costos muy asequibles.</p>
 
-<!-- JUEGO -->
-<div id="memoramaGame" class="hidden game-container">
-  <h2>Memorama - Museo Omar Rayo</h2>
-  <p>Haz clic en las cartas para encontrar las parejas de obras del maestro Omar Rayo.</p>
-  <div id="game-board" class="board"></div>
-  <div id="info" class="info-box"></div>
-  <button id="restartButton">🔄 Reiniciar</button>
+  <p><strong>Soy Yobana Orozco Benavides</strong> y esta revista es una ventana para explorar y valorar el patrimonio artístico de nuestro país. Más que un proyecto universitario, es el inicio de una apasionante aventura cultural.</p>
+
+  <!-- Imagen portada de la primera revista -->
+  <div style="text-align: center; margin-top: 30px;">
+    <img src="https://i.postimg.cc/MTTnhbwc/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-CON-YOBANA-OROZCO-BENAVIDES-EDICI-N-1-MUSEO-RAYO-T.jpg"
+         alt="Portada de la Primera Edición Revista - Ilustrada"
+         style="max-width: 100%; border-radius: 12px; box-shadow: 0 0 20px #ffffff44;">
+   <p style="font-size: 14px; color: #cccccc; margin-top: 10px;">
+  <em>Orozco Benavides, Y. (2023, noviembre). <i>Portada ilustrada primera edición: Museo El Rayo</i> [Ilustración]. Revista <i>Explorando los museos nacionales de Colombia</i>. https://explorandomuseosnacionalesdecolombia.weebly.com/</em>
+</p>
+
+    </div>
+       <p>ACTUALIZACIÓN – 27 DE JUNIO DE 2025</p>
+ 
+  <p>Hoy damos un paso más allá, abriendo una nueva etapa con el lanzamiento de la revista <strong>Explorando Museos y Arte Latinoamericano</strong>, ampliando nuestra mirada hacia todo el continente.</p>
+
+  <p>Con esta expansión, abrimos una convocatoria oficial para publicar nuestra primera edición latinoamericana, en la cual podrán participar artistas visuales, escritores, fotógrafos, ilustradores y creadores de toda América Latina.</p>
+
+  <p>Los seleccionados harán parte de esta primera edición, visibilizando sus obras en una publicación digital gratuita y multicultural.</p>
+
+  <p><strong>Este cambio también marca el nacimiento de nuestra nueva identidad como plataforma:</strong> dejamos de ser únicamente <em>Explorando Museos Nacionales de Colombia</em> para convertirnos en <strong>Explorando Museos y Arte Latinoamericano</strong>, una propuesta incluyente y colectiva al servicio del arte latino.</p>
+
+  <p>Con este nuevo enfoque, nuestra plataforma podrá alojar <strong>dos revistas independientes</strong>: una dedicada a los <strong>Museos Nacionales de Colombia</strong> y otra enfocada en el <strong>Arte Latinoamericano</strong>, permitiendo así una mayor diversidad de contenidos, voces y expresiones artísticas.</p>
+
+  <p>Además, encontrarás <strong>podcasts</strong>, <strong>cuentos digitales multimedia</strong>, <strong>juegos interactivos</strong> y otros recursos diseñados especialmente para promover la <strong>educación artística y cultural</strong> de forma innovadora y accesible para todos.</p>
+   <strong>Importante:</strong> Este proyecto es completamente <strong>sin ánimo de lucro</strong> y está gestionado por la <strong>Fundación Artes Multicap</strong> con el propósito de democratizar el acceso al arte y la cultura en América Latina.
+ 
+  <p>Creemos firmemente que el arte es una herramienta poderosa para la educación, la transformación social y el reconocimiento de nuestra historia cultural.</p>
+    
+
+  <!-- Imagen del flyer de convocatoria -->
+  <div style="text-align: center; margin-top: 30px;">
+    <img src="https://i.postimg.cc/yN3q5MZw/convocatoria-2025-1.png"
+         alt="Flyer convocatoria apertura 2025"
+         style="max-width: 80%; border-radius: 12px; box-shadow: 0 0 20px #ffffff44;">
+    <p style="font-size: 14px; color: #cccccc; margin-top: 10px;">
+  <em>Orozco Benavides, Y. (2025, junio 27). <i>Convocatoria abierta: ¡participa en la nueva etapa latinoamericana!</i> [Flayer publicitario]. Sitio web de la revista <i>Explorando Museos y Arte Latinoamericano</i>. https://explorandomuseosyartelatinoamericano.netlify.app/</em>
+</p>
+
+  </div>
+  <p><strong>ACTUALIZACIÓN – 5 DE JULIO DE 2025</strong></p>
+
+<p>Hoy nace una nueva idea dentro de nuestro proyecto: una <strong>convocatoria especial para niños y jóvenes de 8 a 17 años</strong> de toda América Latina.</p>
+
+<p>Queremos brindarles la alegría de compartir sus obras con otros niños y jóvenes creadores del continente, permitiéndoles conocer artistas como ellos y descubrir que el arte también es una forma de conectar, aprender y expresar quiénes somos.</p>
+
+<p>Creemos que muchos niños nacen con un talento artístico innato, pero al crecer, ese talento muchas veces se pierde por falta de espacios donde pueda ser valorado y cultivado. Esta iniciativa busca precisamente lo contrario: <strong>aprovechar esta etapa mágica de la infancia y adolescencia donde el arte fluye con autenticidad, emoción y libertad</strong>.</p>
+
+<p>Sabemos también que esta propuesta tiene un valor inmenso en el <strong>bienestar emocional de nuestros niños y jóvenes</strong>. El arte les permite explorar su mundo interior, expresar lo que sienten, fortalecer su autoestima y construir identidad. Participar en una revista donde son escuchados y valorados les ayuda a sentirse reconocidos, importantes y capaces.</p>
+
+<p>Soñamos con que cada niño y joven participante <strong>se vea reflejado como artista y ser humano</strong>, en una comunidad creativa que los abraza y les dice: "lo que haces importa".</p>
+
+<p>Esta convocatoria es también un llamado a padres, madres, docentes y cuidadores para que se sumen como aliados, sabiendo que <strong>cuando un adulto cree en el arte de un niño, está nutriendo su mundo emocional, su creatividad y su confianza</strong>.</p>
+  
+  <!-- Flyer anuncio próxima convocatoria infantil -->
+<div style="margin-top: 40px; text-align: center;">
+  <p style="font-size: 16px; font-weight: bold; color: #ffffff; text-shadow: 0 0 10px #ffffff99;">
+    🎨 Muy pronto lanzaremos esta convocatoria para niños y jóvenes de América Latina
+  </p>
+  <img src="https://i.postimg.cc/hjXC1tsH/Whats-App-Image-2025-06-27-at-9-1-2.png" 
+       alt="Convocatoria niños y jóvenes Latinoamérica"
+       style="max-width: 80%; border-radius: 12px; box-shadow: 0 0 20px #ffffff44; margin-top: 15px;">
+  <p style="font-size: 13px; color: #999999; margin-top: 30px;">
+    <em>Orozco Benavides, Y. (2025, julio 5). <i>Muy pronto: Revista Jóvenes Creadores de Latinoamérica</i> [Flayer informativo]. Sitio web oficial Explorando Museos y Arte Latinoamericano. https://explorandomuseosyartelatinoamericano.netlify.app/</em>
+  </p>
+</div>
 </div>
 
-<style>
-  .hidden {
-    display: none;
-  }
 
-  .game-container {
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  .board {
-    display: grid;
-    grid-template-columns: repeat(4, 120px); /* 4 columnas */
-    grid-template-rows: repeat(3, 120px);    /* 3 filas */
-    gap: 10px;
-    justify-content: center;
-    margin: 20px auto;
-  }
-
-  .card {
-    width: 120px;
-    height: 120px;
-    perspective: 1000px;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .card .front,
-  .card .back {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    backface-visibility: hidden;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 24px;
-  }
-
-  .card .front {
-    transform: rotateY(180deg);
-  }
-
-  .card .back {
-    background: #ccc;
-  }
-
-  .card.flipped .front {
-    transform: rotateY(0);
-  }
-
-  .card.flipped .back {
-    transform: rotateY(180deg);
-  }
-
-  .card.matched {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-</style>
-
-<script>
-  function toggleSection(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle("hidden");
-  }
-
-  const cardsData = [
-    { img: 'https://i.postimg.cc/2CPFn4Xy/arte1.jpg', info: 'Obra 1: "Mariposa" por Omar Rayo.' },
-    { img: 'https://i.postimg.cc/sjzYN3zR/arte2.jpg', info: 'Obra 2: "Geometría" por Omar Rayo.' },
-    { img: 'https://i.postimg.cc/dqrR6LzB/arte3.jpg', info: 'Obra 3: "Foto" de Omar Rayo.' },
-    { img: 'https://i.postimg.cc/SSG60HQY/arte4.jpg', info: 'Obra 4: "Entrada al museo" de Omar Rayo.' },
-    { img: 'https://i.postimg.cc/pWb4dZcx/rbol-Omar-Rayo.jpg', info: 'Obra 5: "Árbol de la vida" por Omar Rayo.' },
-    { img: 'https://i.postimg.cc/QX2GTst2/Intaglio.jpg', info: 'Obra 6: "Intaglio" por Omar Rayo.' }
-  ];
-
-  const gameBoard = document.getElementById('game-board');
-  const infoBox = document.getElementById('info');
-  const restartButton = document.getElementById('restartButton');
-
-  let firstCard = null;
-  let lockBoard = false;
-
-  function createCardElement(cardData, index) {
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.dataset.index = index;
-    card.dataset.info = cardData.info;
-
-    const front = document.createElement('img');
-    front.src = cardData.img;
-    front.classList.add('front');
-
-    const back = document.createElement('div');
-    back.classList.add('back');
-    back.textContent = '?';
-
-    card.appendChild(front);
-    card.appendChild(back);
-    card.addEventListener('click', flipCard);
-    return card;
-  }
-
-  function initGame() {
-    gameBoard.innerHTML = '';
-    infoBox.textContent = '';
-    firstCard = null;
-    lockBoard = false;
-
-    const doubledCards = [...cardsData, ...cardsData]; // 6 pares = 12 cartas
-    const shuffled = doubledCards.sort(() => Math.random() - 0.5);
-
-    shuffled.forEach((cardData, index) => {
-      const cardElement = createCardElement(cardData, index);
-      gameBoard.appendChild(cardElement);
-    });
-  }
-
-  function flipCard() {
-    if (lockBoard || this.classList.contains('matched') || this.classList.contains('flipped')) return;
-
-    this.classList.add('flipped');
-
-    if (!firstCard) {
-      firstCard = this;
-      return;
-    }
-
-    const secondCard = this;
-    const firstImage = firstCard.querySelector('.front').src;
-    const secondImage = secondCard.querySelector('.front').src;
-
-    if (firstImage === secondImage) {
-      firstCard.classList.add('matched');
-      secondCard.classList.add('matched');
-      infoBox.textContent = secondCard.dataset.info;
-      firstCard = null;
-    } else {
-      lockBoard = true;
-      setTimeout(() => {
-        firstCard.classList.remove('flipped');
-        secondCard.classList.remove('flipped');
-        firstCard = null;
-        lockBoard = false;
-      }, 1000);
-    }
-  }
-
-  restartButton.addEventListener('click', initGame);
-  initGame();
-</script>
-
- 
+  </div>
+</div>
   
- 
-<!-- JUEGO SOPA DE LETRAS BOTERO -->
-<div id="boteroGame" class="hidden game-container">
-  <h2 style="text-align: center;">SOPA DE LETRAS BOTERO</h2>
-  <div class="intro" style="text-align: left; color: white;">
-    <p><strong>Bienvenidos a la emocionante experiencia de explorar los museos nacionales de Colombia</strong> a través de nuestra sopa de letras <strong>Botero interactiva</strong>.</p>
-    <p>Este juego te llevará a un viaje a través de las letras, mientras descubres nombres de artistas, obras de arte y conceptos relacionados con el <strong>Museo Botero</strong> y la rica historia cultural de Colombia.</p>
-    <p><strong>✨ CLIC Y COMIENZA LA AVENTURA</strong></p>
-    <p><em>Utiliza tu mouse, pantalla táctil o teclado para seleccionar las palabras. Puedes hacer clic en la primera letra.</em></p>
+<div id="convocatoria" class="content" style="font-family: 'Arial', sans-serif; line-height: 1.4; max-width: 950px; margin: auto; padding: 30px; color: #ffffff; background-color: transparent;">
+
+ <!-- Botón principal que despliega las convocatorias -->
+<h2 style="text-align: center; cursor: pointer; color: #ffffff; background-color: #000; padding: 12px 20px; border-radius: 12px; box-shadow: 0 0 15px #ffffff; transition: background 0.3s ease;" 
+    onclick="toggleConvocatorias()">Convocatorias 2025 🔽</h2>
+
+<!-- Contenedor oculto con los botones de convocatoria 1 y 2 -->
+<div id="contenedorConvocatorias" style="display: none; margin-top: 30px; text-align: center; animation: fadeIn 0.5s ease-in-out;">
+
+  <!-- BOTÓN CONVOCATORIA 1 COMO IMAGEN -->
+  <div style="text-align: center; margin: 30px 0;">
+    <img src="https://i.postimg.cc/3wqj0TPL/Whats-App-Image-2025-06-27-at-9-2.png" 
+         alt="Botón Convocatoria 1"
+         onclick="mostrarContenido('convocatoria1')"
+         class="imagen-boton"
+         style="cursor: pointer; max-width: 30%; border-radius: 12px; box-shadow: 0 0 15px rgba(255,255,255,0.3); transition: transform 0.3s ease, box-shadow 0.3s ease;" />
   </div>
 
-  <div id="puzzle"></div>
-  <div id="wordlist" style="text-align: left;"></div>
-  <button onclick="startGame()">🔄 Reiniciar</button>
-</div>
+  <!-- BOTÓN CONVOCATORIA 2 COMO IMAGEN -->
+  <div style="text-align: center; margin: 30px 0;">
+    <img src="https://i.postimg.cc/hjXC1tsH/Whats-App-Image-2025-06-27-at-9-1-2.png" 
+         alt="Botón Convocatoria 2"
+         onclick="mostrarContenido('convocatoria2')"
+         class="imagen-boton"
+         style="cursor: pointer; max-width: 30%; border-radius: 12px; box-shadow: 0 0 15px rgba(255,255,255,0.3); transition: transform 0.3s ease, box-shadow 0 0 25px rgba(255, 255, 255, 0.9);" />
+  </div>
 
+<!-- SCRIPT para desplegar los botones -->
 <script>
-  const originalWords = ["BOTERO", "ARTE", "COLOMBIA", "PINTURA", "ESCULTURA", "CULTURA", "MUSEO", "MONA", "GORDAS", "REALISMO"];
-  let words = [...originalWords];
-  const gridSize = 12;
-  let puzzle = [];
-
-  function createEmptyGrid() {
-    return Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ""));
+function toggleConvocatorias() {
+  const contenedor = document.getElementById('contenedorConvocatorias');
+  if (contenedor.style.display === 'none') {
+    contenedor.style.display = 'block';
+    contenedor.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    contenedor.style.display = 'none';
   }
-
-  function canPlaceWord(word, row, col, dir, grid) {
-    for (let i = 0; i < word.length; i++) {
-      let r = row, c = col;
-      if (dir === 0) c += i;
-      if (dir === 1) r += i;
-      if (dir === 2) { r += i; c += i; }
-      if (dir === 3) { r -= i; c += i; }
-      if (r < 0 || r >= gridSize || c < 0 || c >= gridSize || (grid[r][c] && grid[r][c] !== word[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function placeWordsInGrid(grid, words) {
-    words.forEach(word => {
-      let placed = false;
-      while (!placed) {
-        const dir = Math.floor(Math.random() * 4);
-        const row = Math.floor(Math.random() * gridSize);
-        const col = Math.floor(Math.random() * gridSize);
-        if (canPlaceWord(word, row, col, dir, grid)) {
-          for (let i = 0; i < word.length; i++) {
-            let r = row, c = col;
-            if (dir === 0) c += i;
-            if (dir === 1) r += i;
-            if (dir === 2) { r += i; c += i; }
-            if (dir === 3) { r -= i; c += i; }
-            grid[r][c] = word[i];
-          }
-          placed = true;
-        }
-      }
-    });
-  }
-
-  function fillGridWithRandomLetters(grid) {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let r = 0; r < gridSize; r++) {
-      for (let c = 0; c < gridSize; c++) {
-        if (!grid[r][c]) {
-          grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
-        }
-      }
-    }
-  }
-
-  function renderGrid(grid) {
-    const puzzleDiv = document.getElementById("puzzle");
-    puzzleDiv.innerHTML = "";
-    grid.forEach((row, r) => {
-      row.forEach((cell, c) => {
-        const div = document.createElement("div");
-        div.classList.add("cell");
-        div.textContent = cell;
-        div.dataset.row = r;
-        div.dataset.col = c;
-        div.addEventListener("click", () => selectCell(div));
-        puzzleDiv.appendChild(div);
-      });
-    });
-  }
-
-  let selection = [];
-
-  function selectCell(cell) {
-    cell.classList.toggle("selected");
-    const row = +cell.dataset.row;
-    const col = +cell.dataset.col;
-    const index = selection.findIndex(pos => pos.row === row && pos.col === col);
-    if (index > -1) {
-      selection.splice(index, 1);
-    } else {
-      selection.push({ row, col, letter: cell.textContent });
-    }
-    checkSelection();
-  }
-
-  function checkSelection() {
-    const selectedWord = selection.map(cell => cell.letter).join("");
-    const reversed = selectedWord.split("").reverse().join("");
-
-    if (words.includes(selectedWord) || words.includes(reversed)) {
-      selection.forEach(cell => {
-        const div = document.querySelector(`.cell[data-row='${cell.row}'][data-col='${cell.col}']`);
-        div.classList.remove("selected");
-        div.classList.add("found");
-      });
-
-      const matched = selectedWord.length > 1 ? selectedWord : reversed;
-      const listItem = document.querySelector(`.word-item[data-word="${matched}"]`);
-      if (listItem) listItem.classList.add('checked');
-
-      words = words.filter(w => w !== selectedWord && w !== reversed);
-    }
-    updateWordList();
-    selection = [];
-  }
-
-  function updateWordList() {
-    const list = document.getElementById("wordlist");
-    list.innerHTML = "<strong>🔍 Palabras por encontrar:</strong><br><ul>";
-    originalWords.forEach(word => {
-      list.innerHTML += `<li class="word-item" data-word="${word}"><span class="box" onclick="this.textContent = this.textContent === '✅' ? '☐' : '✅'">☐</span> ${word}</li>`;
-    });
-    list.innerHTML += "</ul>";
-  }
-
-  function startGame() {
-    selection = [];
-    words = [...originalWords];
-    puzzle = createEmptyGrid();
-    placeWordsInGrid(puzzle, [...words]);
-    fillGridWithRandomLetters(puzzle);
-    renderGrid(puzzle);
-    updateWordList();
-  }
-
-  // Inicia automáticamente
-  startGame();
+}
 </script>
 
+
+
+ <div id="convocatoria1" class="seccion-convocatoria" style="margin-top: 30px; text-align: left; padding: 20px; background-color: rgba(255,255,255,0.05); border-radius: 12px;">
+   <img src="https://i.postimg.cc/3wqj0TPL/Whats-App-Image-2025-06-27-at-9-2.png" alt="Convocatoria 2" class="imagen-boton" style="display:block; margin:auto;" />
+
+  <p style="font-size: 15px; margin-bottom: 10px;">
+    <strong>Convocatoria N.º 1</strong> | <strong>Fecha de apertura:</strong> 1 de julio de 2025 | <strong>Cierre:</strong> 1 de agosto de 2025
+  </p>
+  <hr style="margin: 20px 0; border-color: #888;">
+
+  <h3 class="titulo-seccion">Temática de esta edición:</h3>
+  <p><strong>“Rostros y raíces de América Latina”</strong><br>Reflexiona y expresa la identidad y diversidad cultural de nuestros pueblos.</p>
+
+  <h3 class="titulo-seccion">¿Quiénes pueden participar?</h3>
+  <p>Artistas visuales, ilustradores, fotógrafos, escritores, poetas y creadores de cualquier país latinoamericano.</p>
+
+  <h3 class="titulo-seccion">🧩 Categorías de participación:</h3>
+  <ul>
+    <li><strong>🎨 Artes visuales:</strong> pintura, ilustración, escultura, arte digital, etc.<br><em style="color: #bbb;">Mínimo 1 obra, máximo 3 obras por participante.</em></li>
+    <li><strong>✍️ Literatura:</strong> cuento, relato, poesía, ensayo cultural o histórico.<br><em style="color: #bbb;">Solo se permite postular <strong>una (1)</strong> obra literaria por participante.</em></li>
+    <li><strong>📸 Fotografía cultural y artística:</strong><br><em style="color: #bbb;">Mínimo 1 obra, máximo 3 fotografías por participante.</em></li>
+    <li><strong>🎭 Diseño y arte popular:</strong> creaciones artesanales, gráficas o identitarias con raíz cultural o tradicional.<br><em style="color: #bbb;">Mínimo 1 obra, máximo 3 obras por participante.</em></li>
+  </ul>
+
+  <h3 class="titulo-seccion">📅 Cronograma de apertura</h3>
+  <table class="tabla-cronograma">
+    <thead>
+      <tr><th>Fase</th><th>Fecha</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Apertura convocatoria</td><td>1 de julio de 2025</td></tr>
+      <tr><td>Cierre convocatoria</td><td>1 de agosto de 2025</td></tr>
+      <tr><td>Selección de obras</td><td>1 al 15 de agosto</td></tr>
+      <tr><td>Notificación</td><td>16 al 23 de agosto</td></tr>
+      <tr><td>Publicación digital</td><td>8 de septiembre</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="titulo-seccion">📩 ¿Cómo postular?</h3>
+  <p>Completa el siguiente formulario en línea con tus datos y obra:</p>
+  <p><a href="https://forms.gle/euVgR4cYoVCmMUob6" target="_blank" class="boton-elegante">📝 Ir al formulario</a></p>
+
+  <h4 class="titulo-seccion">📄 Documento obligatorio</h4>
+  <p>Descarga, diligencia y firma la <strong>Declaración de Autoría y Autorización de Publicación</strong>, y súbela al formulario:</p>
+  <p><a href="https://drive.google.com/file/d/19FCm6gSclT65Mi5iq_kyVAj1luP_iEVZ/view?usp=sharing" target="_blank" class="boton-elegante">📥 Descargar Declaración</a></p>
+
+  <h3 class="titulo-seccion">⚠️ Derechos de autor y privacidad</h3>
+  <ul>
+    <li>Obras originales e inéditas</li>
+    <li>Participante responsable por plagio</li>
+    <li>Datos usados solo para fines de la revista</li>
+    <li>Al participar, acepta publicación digital con crédito</li>
+  </ul>
+
+  <div style="margin-top: 40px; background-color: #111; border-radius: 12px; padding: 20px; box-shadow: 0 0 20px #00ffff55; text-align: center;">
+    <h3 style="margin-bottom: 20px;">¡Comparte esta convocatoria!</h3>
+    <img src="https://i.postimg.cc/yN3q5MZw/convocatoria-2025-1.png" alt="Convocatoria 2025" style="width: 100%; border-radius: 12px; box-shadow: 0 0 15px #ffffff44; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://explorandomuseosyartelatinoamericano.netlify.app" target="_blank" class="boton-elegante">Compartir en Facebook</a>
+      <a href="https://twitter.com/intent/tweet?text=Participa%20en%20la%20convocatoria%20de%20Explorando%20Museos%20y%20Arte%20Latinoamericano%202025!&url=https://explorandomuseosyartelatinoamericano.netlify.app" target="_blank" class="boton-elegante">Compartir en X</a>
+      <a href="https://api.whatsapp.com/send?text=Participa%20en%20la%20convocatoria%20de%20arte%20Latinoamericano%202025!%20Mira%20aquí:%20https://explorandomuseosyartelatinoamericano.netlify.app" target="_blank" class="boton-elegante">Compartir por WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<!-- ESTILOS -->
 <style>
-  #puzzle {
-    display: grid;
-    grid-template-columns: repeat(12, 30px);
-    justify-content: center;
-    gap: 4px;
-    margin: 20px 0;
-  }
-
-  .cell {
-    width: 30px;
-    height: 30px;
-    background-color: #1e1e1e;
-    color: #00ffcc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    border: 1px solid #00bfff;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .cell.selected {
-    background-color: #004d4d;
-  }
-
-  .cell.found {
-    background-color: #00bfff;
-    color: #000;
-    font-weight: bold;
-  }
-
-  #wordlist {
-    margin-top: 20px;
-    font-size: 1.1em;
-    color: white;
-  }
-
-  #wordlist ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .word-item {
-    margin-bottom: 5px;
-  }
-
-  .box {
+  .titulo-seccion {
+    background-color: #000;
+    padding: 10px 18px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 18px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px #ffffffaa;
     display: inline-block;
-    width: 20px;
-    color: #00ffcc;
-    font-weight: bold;
-    margin-right: 8px;
-    cursor: pointer;
+    margin: 25px 0 15px;
   }
 
-  .word-item.checked .box {
-    color: #00ffcc;
+  .tabla-cronograma {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    box-shadow: 0 0 20px #ffffff33;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .tabla-cronograma th, .tabla-cronograma td {
+    padding: 12px;
+    border: 1px solid #555;
+    background-color: #111;
+    color: #ffffff;
+    text-align: center;
+    font-size: 15px;
+  }
+
+  .tabla-cronograma thead th {
+    background-color: #ffffff11;
+    font-weight: bold;
+    text-shadow: none;
+    letter-spacing: 1px;
+  }
+
+  .boton-elegante {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+    box-shadow: 0 0 12px #ffffffaa;
+    margin: 10px;
+  }
+
+  .boton-elegante:hover {
+    background: #fff;
+    color: #000;
+    border-color: #000;
+    box-shadow: 0 0 20px #ffffff;
   }
 </style>
 
-  
 
-<!-- JUEGO: ROMPECABEZAS ART LAND -->
-<div id="artLandGame" class="hidden game-container">
-  <h2>Rompecabeza Museo Art Land</h2>
-  <p>
-    ¡Bienvenido al rompecabezas interactivo! Arrastra y suelta las piezas para armar la imagen completa.<br>
-    Cuando completes el rompecabezas, ¡aparecerá una carita feliz!<br>
-    Usa el botón para cambiar la imagen y seguir jugando.
-  </p>
 
-  <div id="puzzle-wrapper" style="width: 90vw; max-width: 360px; margin: auto;">
-    <div id="puzzle-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;"></div>
+  <!-- CONTENIDO CONVOCATORIA 2 -->
+  <div id="convocatoria2" class="seccion-convocatoria" style="display: none; margin-top: 30px;">
+    <img src="https://i.postimg.cc/hjXC1tsH/Whats-App-Image-2025-06-27-at-9-1-2.png" alt="Convocatoria 2" class="imagen-boton" style="display:block; margin:auto;" />
+    <p style="text-align: center; margin-top: 15px;"><strong>Convocatoria N.º 1 | Próximamente</strong></p>
+    <hr style="margin: 20px 0; border-color: #555;">
+    <p style="text-align: center;"><em>Estamos trabajando en la próxima convocatoria. Muy pronto compartiremos toda la información.</em></p>
+  </div>
+</div>
+
+
+<style>
+  .imagen-boton {
+    cursor: pointer;
+    max-width: 90%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .imagen-boton:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(255,255,255,0.9);
+  }
+
+  .boton-elegante {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(255,255,255,0.2);
+    margin: 10px;
+  }
+
+  .boton-elegante:hover {
+    background: #000000;
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 0 12px #ffffff;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+</style>
+
+<script>
+  function mostrarContenido(id) {
+    const secciones = document.querySelectorAll('.seccion-convocatoria');
+    secciones.forEach(sec => {
+      sec.style.display = (sec.id === id) ? 'block' : 'none';
+    });
+  }
+</script>
+
+
+<style>
+  .boton-elegante {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(255,255,255,0.2);
+  }
+
+ .boton-elegante:hover {
+    background: #ffffff;
+    color: #000000;
+    border-color: #000000;
+    box-shadow: 0 0 20px #ffffff;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+</style>
+
+<script>
+  function mostrarContenido(id) {
+    const seccion = document.getElementById(id);
+    const visible = seccion.style.display === 'block';
+    document.querySelectorAll('.seccion-convocatoria').forEach(sec => sec.style.display = 'none');
+    seccion.style.display = visible ? 'none' : 'block';
+  }
+</script>
+ 
+
+</div>
+
+<script>
+  function mostrarDonaciones() {
+    var info = document.getElementById("donaciones-info");
+    info.style.display = (info.style.display === "none") ? "block" : "none";
+  }
+
+</div>
+
+<script>
+  function mostrarDonaciones() {
+    var info = document.getElementById('donaciones-info');
+    info.style.display = (info.style.display === 'none') ? 'block' : 'none';
+  }
+</script>
+
   </div>
 
-  <div id="mensaje" style="margin: 20px 0; color: #0f0; font-weight: bold;"></div>
-  <button id="btn-cambiar">Cambiar imagen</button>
+  <script>
+    function toggleContent(id) {
+      const contents = document.querySelectorAll('.content');
+      contents.forEach(c => {
+        c.style.display = c.id === id ? 'block' : 'none';
+      });
+    }
+    window.onload = () => toggleContent('inicio');
+  </script>
+
+</div>
 </div>
 
-<script>
-  const imagenes = [
-    'https://i.postimg.cc/gkhPLscJ/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano.png',
-    'https://i.postimg.cc/RhkhQ0nn/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano-1.png',
-    'https://i.postimg.cc/YqxhZYZd/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano-2.png'
-  ];
+  <div id="revistas" class="content">
+    <h2>Revistas Digitales</h2>
+    <iframe allowfullscreen="allowfullscreen" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5ffd636e32.html" style="height: 600px;"></iframe>
 
-  const filas = 4, columnas = 4, totalPiezas = filas * columnas;
-  const puzzleContainer = document.getElementById('puzzle-container');
-  const mensaje = document.getElementById('mensaje');
-  const btnCambiar = document.getElementById('btn-cambiar');
-  let piezas = [], imagenActualIndex = 0;
-
-  function mezclarArray(arr) {
-    return arr.sort(() => Math.random() - 0.5);
-  }
-
-  function crearPiezas() {
-    piezas = [];
-    puzzleContainer.innerHTML = '';
-    mensaje.textContent = '';
-
-    const containerSize = puzzleContainer.offsetWidth;
-    const tamañoPieza = containerSize / columnas;
-
-    for (let i = 0; i < totalPiezas; i++) {
-      const pieza = document.createElement('div');
-      pieza.setAttribute('draggable', true);
-      pieza.style.width = `${tamañoPieza}px`;
-      pieza.style.height = `${tamañoPieza}px`;
-      pieza.style.backgroundImage = `url(${imagenes[imagenActualIndex]})`;
-      pieza.style.backgroundSize = `${containerSize}px ${containerSize}px`;
-      pieza.style.backgroundPosition = `-${(i % columnas) * tamañoPieza}px -${Math.floor(i / columnas) * tamañoPieza}px`;
-      pieza.style.borderRadius = '6px';
-      pieza.style.boxShadow = '0 0 10px #0ff';
-      pieza.style.cursor = 'grab';
-      pieza.classList.add('pieza');
-      pieza.dataset.posOriginal = i;
-      piezas.push(pieza);
-    }
-
-    const posicionesMezcladas = mezclarArray([...Array(totalPiezas).keys()]);
-    posicionesMezcladas.forEach((mezclada, index) => {
-      const pieza = piezas[mezclada];
-      puzzleContainer.appendChild(pieza);
-      pieza.dataset.posActual = index;
-    });
-
-    agregarDragAndDrop();
-  }
-
-  function agregarDragAndDrop() {
-    let piezaArrastrada = null;
-
-    piezas.forEach(pieza => {
-      pieza.addEventListener('dragstart', () => {
-        piezaArrastrada = pieza;
-        pieza.classList.add('dragging');
-      });
-
-      pieza.addEventListener('dragend', () => {
-        pieza.classList.remove('dragging');
-        piezaArrastrada = null;
-        chequearPuzzle();
-      });
-
-      pieza.addEventListener('dragover', e => e.preventDefault());
-
-      pieza.addEventListener('drop', e => {
-        e.preventDefault();
-        if (piezaArrastrada && pieza !== piezaArrastrada) {
-          const nodo1 = piezaArrastrada.nextSibling === pieza ? piezaArrastrada : piezaArrastrada.nextSibling;
-          puzzleContainer.insertBefore(piezaArrastrada, pieza);
-          puzzleContainer.insertBefore(pieza, nodo1);
-          Array.from(puzzleContainer.children).forEach((p, i) => p.dataset.posActual = i);
-        }
-      });
-    });
-  }
-
-  function chequearPuzzle() {
-    const hijos = Array.from(puzzleContainer.children);
-    const armado = hijos.every((pieza, i) => parseInt(pieza.dataset.posOriginal) === i);
-    if (armado) {
-      mensaje.textContent = '🎉 ¡Felicidades! Rompecabezas armado correctamente 😊';
-    }
-  }
-
-  btnCambiar.addEventListener('click', () => {
-    imagenActualIndex = (imagenActualIndex + 1) % imagenes.length;
-    crearPiezas();
-  });
-
-  window.addEventListener('resize', () => {
-    setTimeout(crearPiezas, 300);
-  });
-</script>
-
-
-
-
+    <iframe src="https://heyzine.com/flip-book/f6b3339d6e.html" style="height: 600px;"></iframe>
+    <iframe src="https://heyzine.com/flip-book/8b11ce9d5f.html" style="height: 600px;"></iframe>
+    <iframe src="https://heyzine.com/flip-book/af9110dae0.html" style="height: 600px;"></iframe>
+  </div>
   
-  
+  <div id="revistas Latinoamericanas" class="content">
+  <h2 style="text-align: center; margin-bottom: 20px;">Convocatoria #1 para la apertura de la Revista Explorando Arte y Cultura de Latinoamérica</h2>
 
-<!-- JUEGO: EL AHORCADO -->
-<div id="ahorcadoGame" class="hidden game-container">
-  <h2>Juego Ahorcado - Museo Mundo Chatarra</h2>
-  <p>
-    Bienvenido al juego del ahorcado más artístico y ecológico inspirado en el Museo Mundo Chatarra.
-    Este museo transforma la chatarra en esculturas que hablan de reciclaje, arte y conciencia ambiental. 
-    Adivina las palabras ocultas que representan este universo creativo, donde el hierro tiene alma y el arte ayuda a proteger el planeta. 
-    ¡Diviértete y aprende jugando!
+  <!-- Imagen -->
+  <img src="https://i.postimg.cc/yN3q5MZw/convocatoria-2025-1.png"
+       alt="Revista Arte Latinoamérica"
+       style="max-width: 90%; border-radius: 12px; box-shadow: 0 0 20px #ffffffaa; margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto;">
+    
+
+  <!-- Video -->
+  <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 0 20px #ffffff88;">
+    <iframe src="https://www.youtube.com/embed/-v7knXocDp0"
+            frameborder="0"
+            allowfullscreen
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    </iframe>
+  </div>
+</div>
+
+<div id="revistas Jóvenes Creadores" class="content">
+  <h2 style="text-align: center; margin-bottom: 20px;">Muy pronto abriremos convocatoria para la apertura de la Revista Jóvenes Creadores de Latinoamérica</h2>
+
+  <!-- Imagen destacada -->
+  <img src="https://i.postimg.cc/hjXC1tsH/Whats-App-Image-2025-06-27-at-9-1-2.png"
+       alt="Revista Jóvenes Creadores"
+       style="max-width: 90%; border-radius: 12px; box-shadow: 0 0 20px #ffffffaa; margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto;">
+</div>
+
+
+
+  <div id="cuentos" class="content">
+    <h2>Cuento Animado</h2>
+    <iframe src="https://www.youtube.com/embed/Y3_8D_ahJZk?si=R5iiSCuOfZnv-WJ4" allowfullscreen style="height: 450px;"></iframe>
+  </div>
+
+  <div id="podcast" class="content">
+    <h2>Podcast</h2>
+    <iframe src="https://www.youtube.com/embed/v4E8rj9nErk" allowfullscreen style="height: 450px;"></iframe>
+  </div>
+
+
+  <div id="juegos" class="content">
+    <h2>Juegos</h2>
+    <!-- Primer iframe del juego principal -->
+<iframe src="https://juegosmuseosnacionalescolombia.netlify.app/" 
+        allowfullscreen 
+        style="width: 100%; height: 1000px; border: none;">
+</iframe>
+
+<!-- Botones de juegos adicionales -->
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px;">
+  
+  <!-- Juego 1 -->
+  <a href="https://juegoemocionesenelaulayobanaorozcob.netlify.app/" target="_blank">
+    <img src="https://i.postimg.cc/Dn3Cb6TY/418b1c0f-8d2a-463f-9cb1-271bd0abfd0e-1.png" 
+         alt="Juego Emociones" 
+         style="width: 180px; border-radius: 12px; transition: transform 0.2s;"
+         onmouseover="this.style.transform='scale(1.05)'"
+         onmouseout="this.style.transform='scale(1)'"/>
+  </a>
+
+  <!-- Juego 2 -->
+  <a href="https://arteconretosabc.netlify.app/" target="_blank">
+    <img src="https://i.postimg.cc/KmJQwygd/a83b4e63-399d-4f57-8c16-772b47efc13e-3.png" 
+         alt="Arte con Retos" 
+         style="width: 180px; border-radius: 12px; transition: transform 0.2s;"
+         onmouseover="this.style.transform='scale(1.05)'"
+         onmouseout="this.style.transform='scale(1)'"/>
+  </a>
+
+  <!-- Juego 3 -->
+  <a href="https://neophotostudio.netlify.app/" target="_blank">
+    <img src="https://i.postimg.cc/c07F7311/a83b4e63-399d-4f57-8c16-772b47efc13e-1.png" 
+         alt="Neo Photo Studio" 
+         style="width: 180px; border-radius: 12px; transition: transform 0.2s;"
+         onmouseover="this.style.transform='scale(1.05)'"
+         onmouseout="this.style.transform='scale(1)'"/>
+  </a>
+
+  <!-- Juego 4 -->
+  <a href="https://recigoeducativo.netlify.app/" target="_blank">
+    <img src="https://i.postimg.cc/x90t6dqv/a83b4e63-399d-4f57-8c16-772b47efc13e-2.png" 
+         alt="Recigo Educativo" 
+         style="width: 180px; border-radius: 12px; transition: transform 0.2s;"
+         onmouseover="this.style.transform='scale(1.05)'"        onmouseout="this.style.transform='scale(1)'"/>
+    </a>
+  </div>
+</div>
+
+ <div id="servicios" class="content">
+  <h2>Servicios</h2>
+  <ul>
+    <li>Revistas digitales interactivas sobre museos, arte, cultura y literatura latinoamericana</li>
+    <li>Convocatorias abiertas para artistas latinoamericanos</li>
+    <li>Publicación de obras visuales, textos literarios y proyectos culturales</li>
+    <li>Acompañamiento editorial y difusión digital de los artistas seleccionados</li>
+    <li>Cuentos animados y narrados para público infantil y juvenil</li>
+    <li>Juegos educativos con enfoque cultural y pedagógico</li>
+    <li>Podcast culturales con invitados de toda América Latina</li>
+    <li>Diseño de contenidos transmedia y experiencias interactivas</li>
+  </ul>
+</div>
+
+
+  <div id="contacto" class="content">
+    <h2>Contacto</h2>
+    <p>explorandomuseosnacionalesdecolo@yahoo.com</p>
+    <p>artesmulticap2024@gmail.com</p>
+   <p>
+     <p>Whatsapp: +57 3113555949</p>
+   <p>
+  <a href="https://yobanaorozcoartista.bio.link" target="_blank" rel="noopener noreferrer">
+    yobanaorozcoartista.bio.link
+  </a>
+</p>
+
+    <p>Cali - Colombia</p>
+  </div>
+
+ <div id="autores" class="content">
+  <h2>Autora del Sitio Web</h2>
+  <div class="authors-container" style="display: flex; flex-direction: column; align-items: center;">
+    <div class="author" style="text-align: center;">
+      <!-- Imagen de la autora -->
+      <img src="https://cdn.bio.link/uploads/profile_pictures/2023-03-26/pbuGkT1rciKvlmNEv8Oyz5aZnwnFY8wR.png" 
+           alt="Yobana Orozco Benavides" 
+           style="width: 150px; height: auto; border-radius: 50%; box-shadow: 0 0 15px #ff6f00aa; margin-bottom: 1rem;" />
+
+      <h3>Yobana Orozco Benavides</h3>
+      <p>Investigadora, fotógrafa, diseñadora y narradora. Responsable del contenido, diseño, fotografía y producción de esta revista.</p>
+    </div>
+  </div>
+</div>
+
+</p>
+</div>
+
+
+
+<div style="text-align: center; margin-top: 50px;">
+  <h3 style="background-color: transparent; color: #ffffff; text-shadow: 0 0 12px #ff8888; font-weight: normal;">
+    ❤️ Revista sin ánimo de lucro
+  </h3>
+  <p style="color: #cccccc; font-size: 20px;">
+    Gestionado por <strong style="color: #ffffff;">Fundación Artes Multicap</strong>. Proyecto cultural gratuito y colectivo.
+  </p>
+</div>
+
+
+<!-- Sección de apoyo a la iniciativa -->
+<div style="text-align: center; margin-top: 60px;">
+  <h3 style="background-color: transparent; color: #ffffff; text-shadow: 0 0 6px #00ffff; font-weight: normal;">
+    💖 ¿Quieres apoyar esta iniciativa?
+  </h3>
+  <p style="color: #cccccc; font-size: 15px; max-width: 600px; margin: auto; margin-bottom: 20px;">
+    Tu aporte voluntario ayuda a mantener esta revista viva y activa. Cada contribución cuenta 💫
   </p>
 
-  <canvas id="canvas" width="200" height="250" style="background-color: #fff; border-radius: 10px;"></canvas>
-  <div id="wordDisplay" style="font-size: 2em; margin: 20px; letter-spacing: 10px;"></div>
-  <div class="keyboard" id="keyboard" style="margin-bottom: 20px;"></div>
-  <div id="message" style="font-size: 1.3em; font-weight: bold;"></div>
-  <button id="resetBtn" onclick="initGame()">🔁 Reiniciar</button>
+<!-- Botón elegante para mostrar/ocultar medios de apoyo -->
+<button onclick="toggleDonaciones()" class="boton-elegante">
+  👉  Apoyar esta iniciativa 💖
+</button>
+
+<!-- Información desplegable -->
+<div id="donaciones-info" style="display: none; margin-top: 25px; font-size: 16px; color: #f0f0f0; max-width: 500px; margin-left: auto; margin-right: auto; background-color: #111; padding: 20px; border: 1px solid #00ffff; border-radius: 10px; box-shadow: 0 0 15px #00ffff55; text-align: center;">
+
+  <p style="margin-bottom: 20px;"><strong>Elige el medio que prefieras:</strong></p>
+
+  <!-- 🟢 Nequi -->
+  <a href="https://clientes.nequi.com.co/recargas" target="_blank">
+    <img src="https://i.pinimg.com/736x/c4/0a/b0/c40ab01d14db177db1cf5005e57b3d75.jpg" alt="Nequi" style="width: 100px; margin: 10px; border-radius: 10px; box-shadow: 0 0 10px #00ffff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  </a>
+  <p><strong>📱 Nequi:</strong> 3113555949</p>
+
+  <!-- 🔵 Daviplata -->
+  <a href="https://www.daviplata.com/wps/portal/daviplata/Home/ComoMeterlePlata" target="_blank">
+    <img src="https://logosenvector.com/logo/img/daviplata-37317.png" alt="Daviplata" style="width: 110px; margin: 10px; border-radius: 10px; box-shadow: 0 0 10px #00ffff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  </a>
+  <p><strong>📱 Daviplata:</strong> 3113555949</p>
+
+  <!-- 🔵 PayPal -->
+  <a href="https://www.paypal.me/yobanaoro82" target="_blank">
+    <img src="https://newsroom.es.paypal-corp.com/image/pp_h_rgb_logo_tn.jpg" alt="PayPal" style="width: 110px; margin: 10px; border-radius: 10px; box-shadow: 0 0 10px #00ffff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  </a>
+
+  <hr style="margin: 25px auto; border-color: #00ffff33; width: 80%;">
+
+  <!-- 🟣 Mercado Pago -->
+  <a href="https://link.mercadopago.com.co/artesmulticap" target="_blank">
+    <img src="https://www.valoraanalitik.com/wp-content/uploads/2023/07/Mercado-Pago.jpg" alt="Mercado Pago" style="width: 130px; margin: 10px; border-radius: 10px; box-shadow: 0 0 10px #00ffff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  </a>
+
+  <!-- 🟡 Western Union -->
+  <a href="https://www.westernunion.com/co/es/how-to-send-money.html" target="_blank">
+    <img src="https://e7.pngegg.com/pngimages/408/663/png-clipart-logo-product-design-brand-western-union-font-design-text-label-thumbnail.png" alt="Western Union" style="width: 130px; margin: 10px; border-radius: 10px; box-shadow: 0 0 10px #00ffff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  </a>
+  <p><strong>🏦 Western Union:</strong><br>Yobana Orozco Benavides – Cali, Colombia</p>
+
+  <p style="font-size: 14px; font-style: italic; color: #cccccc; margin-top: 20px;">
+    Gracias por tu apoyo. Este proyecto existe gracias a personas como tú.
+  </p>
 </div>
 
+<!-- Script para efecto toggle -->
 <script>
-  const palabras = [
-    "QUIJOTE", "DULCINEA", "SANCHO", "CHATARRA", "ESCULTURA",
-    "RECICLAJE", "PINOCCHIO", "MECANICA", "SOSTENIBILIDAD",
-    "ARTE", "FUTURO", "PLANETA", "ENGRANAJE"
-  ];
-
-  let palabra = "";
-  let aciertos = [];
-  let errores = [];
-  const maxErrores = 6;
-
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-
-  function dibujarBase() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#2c3e50";
-    ctx.beginPath();
-    ctx.moveTo(10, 240); ctx.lineTo(190, 240); // base
-    ctx.moveTo(50, 240); ctx.lineTo(50, 20);   // palo vertical
-    ctx.lineTo(130, 20);                       // horizontal superior
-    ctx.lineTo(130, 40);                       // colgante
-    ctx.stroke();
-  }
-
-  function dibujarParte(errores) {
-    ctx.strokeStyle = "#2c3e50";
-    ctx.beginPath();
-    switch (errores) {
-      case 1: ctx.arc(130, 60, 20, 0, Math.PI * 2); break; // cabeza
-      case 2: ctx.moveTo(130, 80); ctx.lineTo(130, 140); break; // tronco
-      case 3: ctx.moveTo(130, 100); ctx.lineTo(100, 120); break; // brazo izq
-      case 4: ctx.moveTo(130, 100); ctx.lineTo(160, 120); break; // brazo der
-      case 5: ctx.moveTo(130, 140); ctx.lineTo(110, 180); break; // pierna izq
-      case 6: ctx.moveTo(130, 140); ctx.lineTo(150, 180); break; // pierna der
-    }
-    ctx.stroke();
-  }
-
-  function mostrarPalabra() {
-    const display = palabra.split('').map(letra => aciertos.includes(letra) ? letra : '_').join(' ');
-    document.getElementById("wordDisplay").textContent = display;
-    if (!display.includes("_")) {
-      document.getElementById("message").textContent = "🎉 ¡Ganaste!";
-      desactivarTeclado();
-    }
-  }
-
-  function manejarLetra(letra, btn) {
-    btn.disabled = true;
-    if (palabra.includes(letra)) {
-      aciertos.push(letra);
-      mostrarPalabra();
+  function toggleDonaciones() {
+    const info = document.getElementById("donaciones-info");
+    if (info.style.display === "none" || info.style.display === "") {
+      info.style.display = "block";
     } else {
-      errores.push(letra);
-      dibujarParte(errores.length);
-      if (errores.length === maxErrores) {
-        document.getElementById("message").textContent = `💀 ¡Perdiste! La palabra era: ${palabra}`;
-        desactivarTeclado();
-      }
+      info.style.display = "none";
     }
-  }
-
-  function crearTeclado() {
-    const letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-    const tecladoDiv = document.getElementById("keyboard");
-    tecladoDiv.innerHTML = "";
-    letras.split("").forEach(letra => {
-      const btn = document.createElement("button");
-      btn.textContent = letra;
-      btn.onclick = () => manejarLetra(letra, btn);
-      btn.style.margin = "4px";
-      tecladoDiv.appendChild(btn);
-    });
-  }
-
-  function desactivarTeclado() {
-    document.querySelectorAll('#keyboard button').forEach(b => b.disabled = true);
-  }
-
-  function initGame() {
-    palabra = palabras[Math.floor(Math.random() * palabras.length)];
-    aciertos = [];
-    errores = [];
-    document.getElementById("message").textContent = "";
-    dibujarBase();
-    mostrarPalabra();
-    crearTeclado();
   }
 </script>
-
   
-  
-  <!-- Puedes insertar aquí más juegos siguiendo el mismo patrón: sopa de letras, rompecabezas, ahorcado -->
+  <!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  <footer>
-    <p>© 2025 Derechos de autor: Yobana Orozco Benavides / Fundación Artes Multicap</p>
-  </footer>
+  gtag('config', 'G-DFKYHSHG7R');
+</script>
+
+
+
+<footer style="background-color: #000000; padding: 40px 20px; font-family: 'Arial', sans-serif; color: #f1f1f1; text-align: center; border-top: 2px solid #000; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);">
+
+  <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #ffffff;">
+    © 2023 – 2025 | Explorando Museos y Arte Latinoamericano
+  </h3>
+  
+  <p style="max-width: 750px; margin: auto; font-size: 14px; line-height: 1.8;">
+    Proyecto educativo y cultural creado por <strong>Yobana Orozco Benavides</strong>. Iniciado en 2023 como <em>Explorando Museos Nacionales de Colombia</em> y transformado en 2025 en <strong>Explorando Museos y Arte Latinoamericano</strong>, una plataforma de difusión artística, pedagógica y cultural para toda Latinoamérica.
+  </p>
+
+  <p style="margin-top: 15px; font-size: 13px;">
+    <span style="font-size: 16px;">📚</span> Licencia: 
+    <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.es" target="_blank" rel="noopener" style="color: #00e6b8; text-decoration: none;">
+      Creative Commons BY-NC 4.0
+    </a> — uso libre educativo, prohibido uso comercial.
+  </p>
+
+  <p style="margin-top: 10px;">
+    <span style="font-size: 16px;">🌐</span> Bio autora: 
+    <a href="https://yobanaorozcoartista.bio.link/" target="_blank" rel="noopener" style="color: #00e6b8; text-decoration: none;">
+      https://yobanaorozcoartista.bio.link
+    </a>
+  </p>
+
+  <!-- Contador de visitas -->
+  <div style="margin-top: 30px;">
+    <p style="color: #aaaaaa; font-size: 13px; margin-bottom: 5px;">👀 Visitas al sitio:</p>
+    <div id="sfcr2al5k5tsk2tt2ufgfblcsa79xubz8hr" style="margin-bottom: 20px;"></div>
+    <script type="text/javascript" src="https://counter1.optistats.ovh/private/counter.js?c=r2al5k5tsk2tt2ufgfblcsa79xubz8hr&down=async" async></script>
+    <noscript>
+      <a href="https://www.freecounterstat.com" title="free website counter">
+        <img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=r2al5k5tsk2tt2ufgfblcsa79xubz8hr" border="0" title="free website counter" alt="free website counter">
+      </a>
+    </noscript>
+  </div>
+
+  <div style="margin-top: 10px;">
+    <img src="https://i.postimg.cc/jjZ7mqJB/480702220-618041787505911-8280549859336367380-n.jpg" alt="Logo 1" style="height: 60px; margin: 0 10px; border-radius: 10px;" />
+    <img src="https://i.postimg.cc/KvGnsFtB/Whats-App-Image-2025-06-27-at-9-00-51-AM.jpg" alt="Logo 2" style="height: 60px; margin: 0 10px; border-radius: 10px;" />
+    <img src="https://i.postimg.cc/gJhXtczy/Whats-App-Image-2025-06-27-at-9-1.jpg" alt="Logo 3" style="height: 60px; margin: 0 10px; border-radius: 10px;" />
+  </div>
+
+</footer>
+
+
+
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
