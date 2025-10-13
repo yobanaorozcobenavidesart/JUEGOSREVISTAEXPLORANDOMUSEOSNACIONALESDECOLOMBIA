@@ -1,867 +1,249 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juegos Interactivos - Museos Nacionales COLOMBIA</title>
+  <meta charset="UTF-8">
+  <title>Rostros y raíces de América Latina</title>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 30px 20px;
+      font-family: "Times New Roman", serif;
+      background: black;
+      color: white;
       text-align: center;
     }
 
-    .image-toggle {
-      margin: 30px auto;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00ffcc;
-      transition: transform 0.3s ease;
+    h1 {
+      color: white;
+      margin: 20px 0;
+      font-size: 34px;
+      text-shadow: 0 0 10px white;
     }
 
-    .image-toggle:hover {
-      transform: scale(1.02);
+    h2 {
+      color: white;
     }
 
-    .image-toggle img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
- .image-toggle .label-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px 15px;
-  background: rgba(0, 0, 0, 0.8);
-  font-size: 0.7em;
-  font-weight: normal;
-  color: #fff;
-  text-shadow: 1px 1px 3px #000;
-  z-index: 2;
-  text-align: left;
-}
-
-
-
-    .hidden {
-      display: none;
-    }
-
-    .game-container {
-      margin: 40px auto;
-      max-width: 800px;
-      background-color: #111;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 20px #00bfff;
-    }
-
-    .board {
-      display: grid;
-      grid-template-columns: repeat(4, 120px);
-      gap: 15px;
+    #puzzle-container {
+      display: flex;
       justify-content: center;
-      margin-top: 20px;
+      align-items: center;
+      margin: 20px;
     }
 
-    .card {
+    #board {
+      display: grid;
+      grid-template-columns: repeat(5, 120px);
+      grid-template-rows: repeat(4, 120px);
+      gap: 2px;
+      border: 3px solid white;
+      background: #111;
+      box-shadow: 0 0 10px white;
+    }
+
+    .cell {
       width: 120px;
       height: 120px;
-      position: relative;
-      perspective: 1000px;
-      cursor: pointer;
+      background: #000;
+      border: 1px dashed #777;
     }
 
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      backface-visibility: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: rotateY(180deg);
-      transition: transform 0.6s;
-    }
-
-    .card .back {
-      background-color: #333;
-      color: white;
-      font-size: 2em;
+    #pieces {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      backface-visibility: hidden;
-      transform: rotateY(0deg);
-      transition: transform 0.6s;
+      margin: 20px;
+      gap: 5px;
     }
 
-    .card.flipped .front {
-      transform: rotateY(0deg);
+    .piece {
+      width: 120px;
+      height: 120px;
+      background-size: 600px 480px;
+      cursor: grab;
+      border: 1px solid white;
+      border-radius: 4px;
     }
 
-    .card.flipped .back {
-      transform: rotateY(180deg);
+    #message {
+      margin: 20px auto;
+      padding: 20px;
+      width: 80%;
+      border: 2px solid white;
+      display: none;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: white;
+      box-shadow: 0 0 15px white;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+
+    footer {
+      margin-top: 30px;
+      padding: 15px;
+      border-top: 1px solid white;
+      font-style: italic;
+      color: white;
     }
 
     button {
-      margin-top: 25px;
-      padding: 12px 24px;
-      font-size: 1em;
-      background: linear-gradient(45deg, #00ffcc, #00bfff);
-      color: #000;
+      background: white;
+      color: black;
+      font-family: "Times New Roman", serif;
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 20px;
       border: none;
-      border-radius: 50px;
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 0 15px #00ffcc;
+      transition: all 0.3s;
     }
 
     button:hover {
-      background: linear-gradient(45deg, #00bfff, #00ffcc);
-      box-shadow: 0 0 25px #00ffcc, 0 0 10px #00bfff;
-    }
-
-    .large-btn {
-      max-width: 700px;
-    }
-
-    .small-btn {
-  max-width: 100px;
-  height: 150px; /* o el valor que necesites */
-  overflow: hidden; /* útil si el contenido es más grande que el alto */
-}
-
-
-    /* SOLO AJUSTES PARA LOS JUEGOS EN PANTALLAS PEQUEÑAS */
-    @media screen and (max-width: 768px) {
-      /* Memorama */
-      .board {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 10px !important;
-      }
-      .card {
-        width: 90px !important;
-        height: 90px !important;
-      }
-
-      /* Sopa de letras */
-      #puzzle {
-        grid-template-columns: repeat(12, minmax(20px, 1fr)) !important;
-        gap: 2px !important;
-      }
-      .cell {
-        width: 24px !important;
-        height: 24px !important;
-        font-size: 0.75em !important;
-      }
-
-      /* Rompecabezas */
-      #puzzle-wrapper {
-        width: 100% !important;
-        max-width: 320px !important;
-      }
-
-      /* Ahorcado */
-      #canvas {
-        width: 100% !important;
-        height: auto !important;
-      }
-      #keyboard button {
-        padding: 4px 6px !important;
-        font-size: 0.8em !important;
-      }
+      background: #ddd;
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
 
- <!-- BOTÓN PRINCIPAL -->
-<div class="image-toggle large-btn" onclick="toggleSection('subMenu')" style="cursor: pointer; text-align: center; margin-bottom: 20px;">
-  <h2 style="color: white; font-size: 36px; margin: 0 0 20px 0;">Juegos Interactivos Y Educativos</h2>
-  <img src="https://i.postimg.cc/KvGnsFtB/Whats-App-Image-2025-06-27-at-9-00-51-AM.jpg" alt="Juegos Interactivos" style="width: 100%; max-width: 100%; height: auto; border-radius: 12px;" />
-</div>
+  <h1>Rostros y raíces de América Latina</h1>
 
-  
-  <div style="background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 14px;">
-  <h3 style="text-align: center; margin-top: 0; color: #fff;">Instrucciones de uso</h3>
-  <p style="text-align: justify; margin-bottom: 10px;">
-    Haz clic sobre una imagen para abrir el juego correspondiente. El juego se desplegará justo debajo de la imagen seleccionada.
-  </p>
-  <p style="text-align: justify; margin-bottom: 10px;">
-    Puedes jugar libremente y volver a hacer clic sobre la imagen para cerrar el juego.
-  </p>
-  <p style="text-align: justify;">
-    Recuerda que solo puede estar un juego visible a la vez. Si deseas abrir otro, primero cierra el actual.
-  </p>
-</div>
-
-  
-  <div id="subMenu" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 40px 0;">
-    
- <!-- BOTÓN MEMORAMA MUSEO EL RAYO COMO IMAGEN -->
-<div class="image-toggle small-btn" onclick="toggleSection('memoramaGame')" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">Memorama</div>
-  <img src="https://i.postimg.cc/J13jHPdQ/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-CON-YOBANA-OROZCO-BENAVIDES-EDICI-N-1-MUSEO-RAYO-T.jpg" width="140" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-</div>
-
-
-  <!-- BOTÓN SOPA DE LETRAS BOTERO -->
-  <div class="image-toggle small-btn" onclick="toggleSection('boteroGame')" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">SOPA DE LETRAS</div>
-    <img src="https://i.postimg.cc/zXS6K19j/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-EDICION-2-VOL-2-YOBANA-OROZCO.png" width="140" />
+  <div id="puzzle-container">
+    <div id="board"></div>
   </div>
 
-  <!-- BOTÓN ROMPECABEZAS ART LAND -->
-  <div class="image-toggle small-btn" onclick="toggleSection('artLandGame'); setTimeout(crearPiezas, 100);" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.8em; margin-top: 8px;">ROMPECABEZA</div>
-    <img src="https://i.postimg.cc/3r5QM9hP/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano.jpg" width="140" />
+  <h2>Piezas</h2>
+  <div id="pieces"></div>
+
+  <button id="restart-btn">🔄 Reiniciar</button>
+
+  <div id="message">
+    <h2>🎉 ¡Felicitaciones! 🎉</h2>
+    <p>
+      Has completado un rompecabezas inspirado en la diversidad, los colores y las raíces de América Latina.  
+      Cada pieza representa la identidad, la memoria y la fuerza de nuestros pueblos.
+    </p>
+    <p><strong>Pronto comenzará un nuevo rompecabezas...</strong></p>
   </div>
-
-  <!-- BOTÓN EL AHORCADO MUSEO MUNDO CHATARRA -->
-  <div class="image-toggle small-btn" onclick="toggleSection('ahorcadoGame'); setTimeout(initGame, 100);" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">AHORCADO</div>
-    <img src="https://i.postimg.cc/9CH7mqB2/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-EDICION-3-VOL-1-YOBANA-OROZCO.jpg" width="140" />
-  </div>
-   <!-- BOTÓN MUSEO LA CIENCIA NATURALES -->
-<div class="image-toggle small-btn"
-     onclick="window.open('https://sudokujuegosmuseo.netlify.app/', '_blank')"
-     style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">
-    SUDOKU
-  </div>
-  <img src="https://i.postimg.cc/kXPLnfQG/MUSEO-DEPAR-TAMEN-TAL-DE-CIENCIAS-NATURALES-1.jpg" width="140" />
-</div>
-
-
-
-</div>
-
-
-<!-- JUEGO -->
-<div id="memoramaGame" class="hidden game-container">
-  <h2>Memorama - Museo Omar Rayo</h2>
-  <p>Haz clic en las cartas para encontrar las parejas de obras del maestro Omar Rayo.</p>
-  <div id="game-board" class="board"></div>
-  <div id="info" class="info-box"></div>
-  <button id="restartButton">🔄 Reiniciar</button>
-</div>
-
-<style>
-  .hidden {
-    display: none;
-  }
-
-  .game-container {
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  .board {
-    display: grid;
-    grid-template-columns: repeat(4, 120px); /* 4 columnas */
-    grid-template-rows: repeat(3, 120px);    /* 3 filas */
-    gap: 10px;
-    justify-content: center;
-    margin: 20px auto;
-  }
-
-  .card {
-    width: 120px;
-    height: 120px;
-    perspective: 1000px;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .card .front,
-  .card .back {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    backface-visibility: hidden;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 24px;
-  }
-
-  .card .front {
-    transform: rotateY(180deg);
-  }
-
-  .card .back {
-    background: #ccc;
-  }
-
-  .card.flipped .front {
-    transform: rotateY(0);
-  }
-
-  .card.flipped .back {
-    transform: rotateY(180deg);
-  }
-
-  .card.matched {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-</style>
-
-<script>
-  function toggleSection(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle("hidden");
-  }
-
-  const cardsData = [
-    { img: 'https://i.postimg.cc/2CPFn4Xy/arte1.jpg', info: 'Obra 1: "Mariposa" por Omar Rayo.' },
-    { img: 'https://i.postimg.cc/sjzYN3zR/arte2.jpg', info: 'Obra 2: "Geometría" por Omar Rayo.' },
-    { img: 'https://i.postimg.cc/dqrR6LzB/arte3.jpg', info: 'Obra 3: "Foto" de Omar Rayo.' },
-    { img: 'https://i.postimg.cc/SSG60HQY/arte4.jpg', info: 'Obra 4: "Entrada al museo" de Omar Rayo.' },
-    { img: 'https://i.postimg.cc/pWb4dZcx/rbol-Omar-Rayo.jpg', info: 'Obra 5: "Árbol de la vida" por Omar Rayo.' },
-    { img: 'https://i.postimg.cc/QX2GTst2/Intaglio.jpg', info: 'Obra 6: "Intaglio" por Omar Rayo.' }
-  ];
-
-  const gameBoard = document.getElementById('game-board');
-  const infoBox = document.getElementById('info');
-  const restartButton = document.getElementById('restartButton');
-
-  let firstCard = null;
-  let lockBoard = false;
-
-  function createCardElement(cardData, index) {
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.dataset.index = index;
-    card.dataset.info = cardData.info;
-
-    const front = document.createElement('img');
-    front.src = cardData.img;
-    front.classList.add('front');
-
-    const back = document.createElement('div');
-    back.classList.add('back');
-    back.textContent = '?';
-
-    card.appendChild(front);
-    card.appendChild(back);
-    card.addEventListener('click', flipCard);
-    return card;
-  }
-
-  function initGame() {
-    gameBoard.innerHTML = '';
-    infoBox.textContent = '';
-    firstCard = null;
-    lockBoard = false;
-
-    const doubledCards = [...cardsData, ...cardsData]; // 6 pares = 12 cartas
-    const shuffled = doubledCards.sort(() => Math.random() - 0.5);
-
-    shuffled.forEach((cardData, index) => {
-      const cardElement = createCardElement(cardData, index);
-      gameBoard.appendChild(cardElement);
-    });
-  }
-
-  function flipCard() {
-    if (lockBoard || this.classList.contains('matched') || this.classList.contains('flipped')) return;
-
-    this.classList.add('flipped');
-
-    if (!firstCard) {
-      firstCard = this;
-      return;
-    }
-
-    const secondCard = this;
-    const firstImage = firstCard.querySelector('.front').src;
-    const secondImage = secondCard.querySelector('.front').src;
-
-    if (firstImage === secondImage) {
-      firstCard.classList.add('matched');
-      secondCard.classList.add('matched');
-      infoBox.textContent = secondCard.dataset.info;
-      firstCard = null;
-    } else {
-      lockBoard = true;
-      setTimeout(() => {
-        firstCard.classList.remove('flipped');
-        secondCard.classList.remove('flipped');
-        firstCard = null;
-        lockBoard = false;
-      }, 1000);
-    }
-  }
-
-  restartButton.addEventListener('click', initGame);
-  initGame();
-</script>
-
- 
-  
- 
-<!-- JUEGO SOPA DE LETRAS BOTERO -->
-<div id="boteroGame" class="hidden game-container">
-  <h2 style="text-align: center;">SOPA DE LETRAS BOTERO</h2>
-  <div class="intro" style="text-align: left; color: white;">
-    <p><strong>Bienvenidos a la emocionante experiencia de explorar los museos nacionales de Colombia</strong> a través de nuestra sopa de letras <strong>Botero interactiva</strong>.</p>
-    <p>Este juego te llevará a un viaje a través de las letras, mientras descubres nombres de artistas, obras de arte y conceptos relacionados con el <strong>Museo Botero</strong> y la rica historia cultural de Colombia.</p>
-    <p><strong>✨ CLIC Y COMIENZA LA AVENTURA</strong></p>
-    <p><em>Utiliza tu mouse, pantalla táctil o teclado para seleccionar las palabras. Puedes hacer clic en la primera letra.</em></p>
-  </div>
-
-  <div id="puzzle"></div>
-  <div id="wordlist" style="text-align: left;"></div>
-  <button onclick="startGame()">🔄 Reiniciar</button>
-</div>
-
-<script>
-  const originalWords = ["BOTERO", "ARTE", "COLOMBIA", "PINTURA", "ESCULTURA", "CULTURA", "MUSEO", "MONA", "GORDAS", "REALISMO"];
-  let words = [...originalWords];
-  const gridSize = 12;
-  let puzzle = [];
-
-  function createEmptyGrid() {
-    return Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ""));
-  }
-
-  function canPlaceWord(word, row, col, dir, grid) {
-    for (let i = 0; i < word.length; i++) {
-      let r = row, c = col;
-      if (dir === 0) c += i;
-      if (dir === 1) r += i;
-      if (dir === 2) { r += i; c += i; }
-      if (dir === 3) { r -= i; c += i; }
-      if (r < 0 || r >= gridSize || c < 0 || c >= gridSize || (grid[r][c] && grid[r][c] !== word[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function placeWordsInGrid(grid, words) {
-    words.forEach(word => {
-      let placed = false;
-      while (!placed) {
-        const dir = Math.floor(Math.random() * 4);
-        const row = Math.floor(Math.random() * gridSize);
-        const col = Math.floor(Math.random() * gridSize);
-        if (canPlaceWord(word, row, col, dir, grid)) {
-          for (let i = 0; i < word.length; i++) {
-            let r = row, c = col;
-            if (dir === 0) c += i;
-            if (dir === 1) r += i;
-            if (dir === 2) { r += i; c += i; }
-            if (dir === 3) { r -= i; c += i; }
-            grid[r][c] = word[i];
-          }
-          placed = true;
-        }
-      }
-    });
-  }
-
-  function fillGridWithRandomLetters(grid) {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let r = 0; r < gridSize; r++) {
-      for (let c = 0; c < gridSize; c++) {
-        if (!grid[r][c]) {
-          grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
-        }
-      }
-    }
-  }
-
-  function renderGrid(grid) {
-    const puzzleDiv = document.getElementById("puzzle");
-    puzzleDiv.innerHTML = "";
-    grid.forEach((row, r) => {
-      row.forEach((cell, c) => {
-        const div = document.createElement("div");
-        div.classList.add("cell");
-        div.textContent = cell;
-        div.dataset.row = r;
-        div.dataset.col = c;
-        div.addEventListener("click", () => selectCell(div));
-        puzzleDiv.appendChild(div);
-      });
-    });
-  }
-
-  let selection = [];
-
-  function selectCell(cell) {
-    cell.classList.toggle("selected");
-    const row = +cell.dataset.row;
-    const col = +cell.dataset.col;
-    const index = selection.findIndex(pos => pos.row === row && pos.col === col);
-    if (index > -1) {
-      selection.splice(index, 1);
-    } else {
-      selection.push({ row, col, letter: cell.textContent });
-    }
-    checkSelection();
-  }
-
-  function checkSelection() {
-    const selectedWord = selection.map(cell => cell.letter).join("");
-    const reversed = selectedWord.split("").reverse().join("");
-
-    if (words.includes(selectedWord) || words.includes(reversed)) {
-      selection.forEach(cell => {
-        const div = document.querySelector(`.cell[data-row='${cell.row}'][data-col='${cell.col}']`);
-        div.classList.remove("selected");
-        div.classList.add("found");
-      });
-
-      const matched = selectedWord.length > 1 ? selectedWord : reversed;
-      const listItem = document.querySelector(`.word-item[data-word="${matched}"]`);
-      if (listItem) listItem.classList.add('checked');
-
-      words = words.filter(w => w !== selectedWord && w !== reversed);
-    }
-    updateWordList();
-    selection = [];
-  }
-
-  function updateWordList() {
-    const list = document.getElementById("wordlist");
-    list.innerHTML = "<strong>🔍 Palabras por encontrar:</strong><br><ul>";
-    originalWords.forEach(word => {
-      list.innerHTML += `<li class="word-item" data-word="${word}"><span class="box" onclick="this.textContent = this.textContent === '✅' ? '☐' : '✅'">☐</span> ${word}</li>`;
-    });
-    list.innerHTML += "</ul>";
-  }
-
-  function startGame() {
-    selection = [];
-    words = [...originalWords];
-    puzzle = createEmptyGrid();
-    placeWordsInGrid(puzzle, [...words]);
-    fillGridWithRandomLetters(puzzle);
-    renderGrid(puzzle);
-    updateWordList();
-  }
-
-  // Inicia automáticamente
-  startGame();
-</script>
-
-<style>
-  #puzzle {
-    display: grid;
-    grid-template-columns: repeat(12, 30px);
-    justify-content: center;
-    gap: 4px;
-    margin: 20px 0;
-  }
-
-  .cell {
-    width: 30px;
-    height: 30px;
-    background-color: #1e1e1e;
-    color: #00ffcc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    border: 1px solid #00bfff;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .cell.selected {
-    background-color: #004d4d;
-  }
-
-  .cell.found {
-    background-color: #00bfff;
-    color: #000;
-    font-weight: bold;
-  }
-
-  #wordlist {
-    margin-top: 20px;
-    font-size: 1.1em;
-    color: white;
-  }
-
-  #wordlist ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .word-item {
-    margin-bottom: 5px;
-  }
-
-  .box {
-    display: inline-block;
-    width: 20px;
-    color: #00ffcc;
-    font-weight: bold;
-    margin-right: 8px;
-    cursor: pointer;
-  }
-
-  .word-item.checked .box {
-    color: #00ffcc;
-  }
-</style>
-
-  
-
-<!-- JUEGO: ROMPECABEZAS ART LAND -->
-<div id="artLandGame" class="hidden game-container">
-  <h2>Rompecabeza Museo Art Land</h2>
-  <p>
-    ¡Bienvenido al rompecabezas interactivo! Arrastra y suelta las piezas para armar la imagen completa.<br>
-    Cuando completes el rompecabezas, ¡aparecerá una carita feliz!<br>
-    Usa el botón para cambiar la imagen y seguir jugando.
-  </p>
-
-  <div id="puzzle-wrapper" style="width: 90vw; max-width: 360px; margin: auto;">
-    <div id="puzzle-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;"></div>
-  </div>
-
-  <div id="mensaje" style="margin: 20px 0; color: #0f0; font-weight: bold;"></div>
-  <button id="btn-cambiar">Cambiar imagen</button>
-</div>
-
-<script>
-  const imagenes = [
-    'https://i.postimg.cc/gkhPLscJ/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano.png',
-    'https://i.postimg.cc/RhkhQ0nn/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano-1.png',
-    'https://i.postimg.cc/YqxhZYZd/Aprendizaje-y-Creaci-n-en-el-Land-Art-Latinoamericano-2.png'
-  ];
-
-  const filas = 4, columnas = 4, totalPiezas = filas * columnas;
-  const puzzleContainer = document.getElementById('puzzle-container');
-  const mensaje = document.getElementById('mensaje');
-  const btnCambiar = document.getElementById('btn-cambiar');
-  let piezas = [], imagenActualIndex = 0;
-
-  function mezclarArray(arr) {
-    return arr.sort(() => Math.random() - 0.5);
-  }
-
-  function crearPiezas() {
-    piezas = [];
-    puzzleContainer.innerHTML = '';
-    mensaje.textContent = '';
-
-    const containerSize = puzzleContainer.offsetWidth;
-    const tamañoPieza = containerSize / columnas;
-
-    for (let i = 0; i < totalPiezas; i++) {
-      const pieza = document.createElement('div');
-      pieza.setAttribute('draggable', true);
-      pieza.style.width = `${tamañoPieza}px`;
-      pieza.style.height = `${tamañoPieza}px`;
-      pieza.style.backgroundImage = `url(${imagenes[imagenActualIndex]})`;
-      pieza.style.backgroundSize = `${containerSize}px ${containerSize}px`;
-      pieza.style.backgroundPosition = `-${(i % columnas) * tamañoPieza}px -${Math.floor(i / columnas) * tamañoPieza}px`;
-      pieza.style.borderRadius = '6px';
-      pieza.style.boxShadow = '0 0 10px #0ff';
-      pieza.style.cursor = 'grab';
-      pieza.classList.add('pieza');
-      pieza.dataset.posOriginal = i;
-      piezas.push(pieza);
-    }
-
-    const posicionesMezcladas = mezclarArray([...Array(totalPiezas).keys()]);
-    posicionesMezcladas.forEach((mezclada, index) => {
-      const pieza = piezas[mezclada];
-      puzzleContainer.appendChild(pieza);
-      pieza.dataset.posActual = index;
-    });
-
-    agregarDragAndDrop();
-  }
-
-  function agregarDragAndDrop() {
-    let piezaArrastrada = null;
-
-    piezas.forEach(pieza => {
-      pieza.addEventListener('dragstart', () => {
-        piezaArrastrada = pieza;
-        pieza.classList.add('dragging');
-      });
-
-      pieza.addEventListener('dragend', () => {
-        pieza.classList.remove('dragging');
-        piezaArrastrada = null;
-        chequearPuzzle();
-      });
-
-      pieza.addEventListener('dragover', e => e.preventDefault());
-
-      pieza.addEventListener('drop', e => {
-        e.preventDefault();
-        if (piezaArrastrada && pieza !== piezaArrastrada) {
-          const nodo1 = piezaArrastrada.nextSibling === pieza ? piezaArrastrada : piezaArrastrada.nextSibling;
-          puzzleContainer.insertBefore(piezaArrastrada, pieza);
-          puzzleContainer.insertBefore(pieza, nodo1);
-          Array.from(puzzleContainer.children).forEach((p, i) => p.dataset.posActual = i);
-        }
-      });
-    });
-  }
-
-  function chequearPuzzle() {
-    const hijos = Array.from(puzzleContainer.children);
-    const armado = hijos.every((pieza, i) => parseInt(pieza.dataset.posOriginal) === i);
-    if (armado) {
-      mensaje.textContent = '🎉 ¡Felicidades! Rompecabezas armado correctamente 😊';
-    }
-  }
-
-  btnCambiar.addEventListener('click', () => {
-    imagenActualIndex = (imagenActualIndex + 1) % imagenes.length;
-    crearPiezas();
-  });
-
-  window.addEventListener('resize', () => {
-    setTimeout(crearPiezas, 300);
-  });
-</script>
-
-
-
-
-  
-  
-
-<!-- JUEGO: EL AHORCADO -->
-<div id="ahorcadoGame" class="hidden game-container">
-  <h2>Juego Ahorcado - Museo Mundo Chatarra</h2>
-  <p>
-    Bienvenido al juego del ahorcado más artístico y ecológico inspirado en el Museo Mundo Chatarra.
-    Este museo transforma la chatarra en esculturas que hablan de reciclaje, arte y conciencia ambiental. 
-    Adivina las palabras ocultas que representan este universo creativo, donde el hierro tiene alma y el arte ayuda a proteger el planeta. 
-    ¡Diviértete y aprende jugando!
-  </p>
-
-  <canvas id="canvas" width="200" height="250" style="background-color: #fff; border-radius: 10px;"></canvas>
-  <div id="wordDisplay" style="font-size: 2em; margin: 20px; letter-spacing: 10px;"></div>
-  <div class="keyboard" id="keyboard" style="margin-bottom: 20px;"></div>
-  <div id="message" style="font-size: 1.3em; font-weight: bold;"></div>
-  <button id="resetBtn" onclick="initGame()">🔁 Reiniciar</button>
-</div>
-
-<script>
-  const palabras = [
-    "QUIJOTE", "DULCINEA", "SANCHO", "CHATARRA", "ESCULTURA",
-    "RECICLAJE", "PINOCCHIO", "MECANICA", "SOSTENIBILIDAD",
-    "ARTE", "FUTURO", "PLANETA", "ENGRANAJE"
-  ];
-
-  let palabra = "";
-  let aciertos = [];
-  let errores = [];
-  const maxErrores = 6;
-
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-
-  function dibujarBase() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#2c3e50";
-    ctx.beginPath();
-    ctx.moveTo(10, 240); ctx.lineTo(190, 240); // base
-    ctx.moveTo(50, 240); ctx.lineTo(50, 20);   // palo vertical
-    ctx.lineTo(130, 20);                       // horizontal superior
-    ctx.lineTo(130, 40);                       // colgante
-    ctx.stroke();
-  }
-
-  function dibujarParte(errores) {
-    ctx.strokeStyle = "#2c3e50";
-    ctx.beginPath();
-    switch (errores) {
-      case 1: ctx.arc(130, 60, 20, 0, Math.PI * 2); break; // cabeza
-      case 2: ctx.moveTo(130, 80); ctx.lineTo(130, 140); break; // tronco
-      case 3: ctx.moveTo(130, 100); ctx.lineTo(100, 120); break; // brazo izq
-      case 4: ctx.moveTo(130, 100); ctx.lineTo(160, 120); break; // brazo der
-      case 5: ctx.moveTo(130, 140); ctx.lineTo(110, 180); break; // pierna izq
-      case 6: ctx.moveTo(130, 140); ctx.lineTo(150, 180); break; // pierna der
-    }
-    ctx.stroke();
-  }
-
-  function mostrarPalabra() {
-    const display = palabra.split('').map(letra => aciertos.includes(letra) ? letra : '_').join(' ');
-    document.getElementById("wordDisplay").textContent = display;
-    if (!display.includes("_")) {
-      document.getElementById("message").textContent = "🎉 ¡Ganaste!";
-      desactivarTeclado();
-    }
-  }
-
-  function manejarLetra(letra, btn) {
-    btn.disabled = true;
-    if (palabra.includes(letra)) {
-      aciertos.push(letra);
-      mostrarPalabra();
-    } else {
-      errores.push(letra);
-      dibujarParte(errores.length);
-      if (errores.length === maxErrores) {
-        document.getElementById("message").textContent = `💀 ¡Perdiste! La palabra era: ${palabra}`;
-        desactivarTeclado();
-      }
-    }
-  }
-
-  function crearTeclado() {
-    const letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-    const tecladoDiv = document.getElementById("keyboard");
-    tecladoDiv.innerHTML = "";
-    letras.split("").forEach(letra => {
-      const btn = document.createElement("button");
-      btn.textContent = letra;
-      btn.onclick = () => manejarLetra(letra, btn);
-      btn.style.margin = "4px";
-      tecladoDiv.appendChild(btn);
-    });
-  }
-
-  function desactivarTeclado() {
-    document.querySelectorAll('#keyboard button').forEach(b => b.disabled = true);
-  }
-
-  function initGame() {
-    palabra = palabras[Math.floor(Math.random() * palabras.length)];
-    aciertos = [];
-    errores = [];
-    document.getElementById("message").textContent = "";
-    dibujarBase();
-    mostrarPalabra();
-    crearTeclado();
-  }
-</script>
-
-  
-  
-  <!-- Puedes insertar aquí más juegos siguiendo el mismo patrón: sopa de letras, rompecabezas, ahorcado -->
 
   <footer>
-    <p>© 2025 Derechos de autor: Yobana Orozco Benavides / Fundación Artes Multicap</p>
+    Identidad, diversidad y expresiones de nuestros pueblos. <br>
+    <strong>Yobana Orozco Benavides</strong> – Fundación Artes Multicap <br>
+    Proyecto cultural y artístico sin ánimo de lucro.
   </footer>
+
+  <script>
+    // Lista de imágenes actualizada
+    const images = [
+      "https://i.postimg.cc/C5Kncxy9/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-5.jpg",
+      "https://i.postimg.cc/gJs6y65F/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-4.jpg",
+      "https://i.postimg.cc/BbwLkf4j/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-3.jpg",
+      "https://i.postimg.cc/L4y1nLLJ/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-3.png",
+      "https://i.postimg.cc/VvHrpPmB/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-2.jpg",
+      "https://i.postimg.cc/G3bFBbff/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-2.png",
+      "https://i.postimg.cc/qMPg3LRk/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-1.png",
+      "https://i.postimg.cc/TfwbBNv1/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025.png",
+      "https://i.postimg.cc/wvCtQBSN/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-4.png",
+      "https://i.postimg.cc/tTZZ66m3/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-6.jpg"
+    ];
+
+    const cols = 5;
+    const rows = 4;
+    const board = document.getElementById("board");
+    const piecesContainer = document.getElementById("pieces");
+    const message = document.getElementById("message");
+    const restartBtn = document.getElementById("restart-btn");
+
+    let selectedImage = "";
+    let pieces = [];
+    let gameFinished = false;
+
+    function initPuzzle(newImage = false) {
+      message.style.display = "none";
+      gameFinished = false;
+
+      if (newImage || selectedImage === "") {
+        selectedImage = images[Math.floor(Math.random() * images.length)];
+      }
+
+      board.innerHTML = "";
+      for (let i = 0; i < cols * rows; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        board.appendChild(cell);
+      }
+
+      pieces = [];
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const piece = document.createElement("div");
+          piece.classList.add("piece");
+          piece.style.backgroundImage = `url(${selectedImage})`;
+          piece.style.backgroundPosition = `-${col * 120}px -${row * 120}px`;
+          piece.dataset.correctIndex = row * cols + col;
+          piece.draggable = true;
+          pieces.push(piece);
+        }
+      }
+
+      pieces.sort(() => Math.random() - 0.5);
+      piecesContainer.innerHTML = "";
+      pieces.forEach(piece => piecesContainer.appendChild(piece));
+
+      document.querySelectorAll(".piece").forEach(piece => {
+        piece.addEventListener("dragstart", dragStart);
+      });
+      document.querySelectorAll(".cell").forEach(cell => {
+        cell.addEventListener("dragover", dragOver);
+        cell.addEventListener("drop", drop);
+      });
+    }
+
+    let draggedPiece = null;
+
+    function dragStart(e) {
+      draggedPiece = e.target;
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      if (!draggedPiece || gameFinished) return;
+      if (e.target.classList.contains("cell") && e.target.childElementCount === 0) {
+        e.target.appendChild(draggedPiece);
+        checkWin();
+      }
+    }
+
+    function checkWin() {
+      const cells = document.querySelectorAll(".cell");
+      for (let i = 0; i < cells.length; i++) {
+        if (cells[i].childElementCount === 0) return;
+        let piece = cells[i].firstChild;
+        if (piece.dataset.correctIndex != i) return;
+      }
+
+      gameFinished = true;
+      message.style.display = "block";
+
+      // Esperar unos segundos y reiniciar automáticamente con otra imagen
+      setTimeout(() => {
+        initPuzzle(true);
+      }, 7000);
+    }
+
+    restartBtn.addEventListener("click", () => initPuzzle(true));
+
+    // Iniciar la primera vez
+    initPuzzle(true);
+  </script>
 </body>
 </html>
