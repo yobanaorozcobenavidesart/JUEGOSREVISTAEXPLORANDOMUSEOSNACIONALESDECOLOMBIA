@@ -1,72 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juegos Interactivos - Museos Nacionales COLOMBIA</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 30px 20px;
-      text-align: center;
-    }
-    .image-toggle {
-      margin: 30px auto;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00ffcc;
-      transition: transform 0.3s ease;
-    }
-    .image-toggle:hover {
-      transform: scale(1.02);
-    }
-    .hidden {
-      display: none;
-    }
-    .game-container {
-      margin: 40px auto;
-      max-width: 800px;
-      background-color: #111;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 20px #00bfff;
-    }
-  </style>
-</head>
-<body>
-
-<h2 style="color: white; font-size: 32px; margin-bottom: 20px;">Juegos Interactivos</h2>
-
-<div style="background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 14px;">
-  <h3 style="text-align: center; margin-top: 0; color: #fff;">Instrucciones de uso</h3>
-  <p style="text-align: justify;">
-    Haz clic sobre una imagen para abrir el juego correspondiente. Puedes jugar libremente y volver a hacer clic sobre la imagen para cerrarlo.
-  </p>
-  <p style="text-align: justify;">
-    Solo puede estar un juego visible a la vez. Si deseas abrir otro, primero cierra el actual.
-  </p>
-</div>
-
-  
-  <div id="subMenu" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 40px 0;">
-    
- <!-- BOTÓN MEMORAMA MUSEO EL RAYO COMO IMAGEN -->
-<div class="image-toggle small-btn" onclick="toggleSection('memoramaGame')" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">Memorama</div>
-  <img src="https://i.postimg.cc/J13jHPdQ/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-CON-YOBANA-OROZCO-BENAVIDES-EDICI-N-1-MUSEO-RAYO-T.jpg" width="140" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-</div>
-
-
-  <!-- BOTÓN SOPA DE LETRAS BOTERO -->
-  <div class="image-toggle small-btn" onclick="toggleSection('boteroGame')" style="cursor: pointer; text-align: center; margin-top: 20px;">
-  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">SOPA DE LETRAS</div>
-    <img src="https://i.postimg.cc/zXS6K19j/REVISTA-EXPLORANDO-MUSEOS-NACIONALES-DE-COLOMBIA-EDICION-2-VOL-2-YOBANA-OROZCO.png" width="140" />
-  </div>
 
   <!-- BOTÓN ROMPECABEZAS ART LAND -->
   <div class="image-toggle small-btn" onclick="toggleSection('artLandGame'); setTimeout(crearPiezas, 100);" style="cursor: pointer; text-align: center; margin-top: 20px;">
@@ -88,18 +19,40 @@
   </div>
   <img src="https://i.postimg.cc/kXPLnfQG/MUSEO-DEPAR-TAMEN-TAL-DE-CIENCIAS-NATURALES-1.jpg" width="140" />
 </div>
+    
+     <!-- BOTÓN MUSEO LA ut -->
+<div class="image-toggle small-btn"
+     onclick="window.open('https://juegomuseoantropolgicout.netlify.app/', '_blank')"
+     style="cursor: pointer; text-align: center; margin-top: 20px;">
+  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">
+    AHORCADO
+  </div>
+  <img src="https://i.postimg.cc/gjRGRRzm/Museo-Antropologico-UT-(8).jpg" width="140" />
+</div>
 
 <!-- BOTÓN ROSTROS Y RAÍCES DE AMÉRICA LATINA -->
 <div class="image-toggle small-btn"
      onclick="window.open('https://rostros-y-ra-ces-de-am-rica-latina.netlify.app/', '_blank')"
      style="cursor: pointer; text-align: center; margin-top: 20px;">
   <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">
+   
+    
     ROMPECABEZAS
   </div>
   <img src="https://i.postimg.cc/wvCtQBSN/Revista-Explorando-Arte-y-Cultura-de-Latinoam-rica-1-2025-4.png" width="140" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
 </div>
 
 
+<!-- BOTÓN MUSEO LA ut -->
+<div class="image-toggle small-btn"
+     onclick="window.open('https://memoramarevistaj-venescreadoresdelati.netlify.app/', '_blank')"
+     style="cursor: pointer; text-align: center; margin-top: 20px;">
+  <div style="text-transform: uppercase; font-weight: bold; font-size: 0.9em; margin-top: 8px;">
+    Memorama
+  </div>
+  <img src="https://i.postimg.cc/Vvjdw2bG/Cover.jpg" width="140" />
+</div>    
+    
 </div>
 
 
